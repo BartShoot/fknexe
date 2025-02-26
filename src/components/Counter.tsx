@@ -17,11 +17,13 @@ export default function Counter({ children, count }: Props) {
 
   return (
     <>
-      <div class="flex justify-center items-center gap-4 w-fit bg-teal-900/50 rounded-md">
+      <div class="flex justify-center items-center gap-4 w-fit bg-teal-900/50 rounded-md select-none">
         <Button variant="default" size="default" onClick={subtract}>
           -
         </Button>
-        <pre>{count}</pre>
+        <div class="w-4">
+          <pre class="relative flex justify-center items-center">{count}</pre>
+        </div>
         <Button variant="default" size="default" onClick={add}>
           +
         </Button>
