@@ -1,0 +1,14 @@
+package components
+
+import "fknexe/internal/api/models"
+
+templ Items(items []models.Item) {
+	<div id="item-list" class="item-list">
+		for _, item := range items {
+			<div class="item">
+				<p>Name: {item.Name}</p>
+				<p>Link: {item.Link}</p>
+			</div>
+		}
+	</div>
+}

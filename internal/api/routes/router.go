@@ -7,6 +7,6 @@ import (
 
 func SetupRoutes() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/items", handlers.GetItemsHandler)
+	mux.HandleFunc("/api/items", handlers.GetItems)
 	return mux
 }

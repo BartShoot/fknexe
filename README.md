@@ -6,5 +6,5 @@
 # Running
 ```bash
 templ generate
-go run .
+go run \cmd
 ```
