@@ -1,10 +1,21 @@
-# Requirements
+# GitHub Binary Downloader
 
-- go 1.24
-- templ installed
+This project is a web page for facilitating the downloading of binaries from GitHub.
 
-# Running
-```bash
-templ generate
-go run \cmd
-```
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/BartShoot/fknexe.git
+   cd fknexe
+   npm i
+   npm run dev
+   ```
