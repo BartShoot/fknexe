@@ -16,10 +16,14 @@ export default function Counter({ children, count }: Props) {
 
   return (
     <>
-      <div class="counter">
-        <button onClick={subtract}>-</button>
+      <div class="flex justify-center items-center gap-4 w-fit">
+        <button className="cursor-pointer" onClick={subtract}>
+          -
+        </button>
         <pre>{count}</pre>
-        <button onClick={add}>+</button>
+        <button className="cursor-pointer" onClick={add}>
+          +
+        </button>
       </div>
       <Suspense fallback={Fallback}>
         <Message>{children}</Message>
