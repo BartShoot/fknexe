@@ -1,6 +1,7 @@
 import type { ComponentChildren } from "preact";
 import type { Signal } from "@preact/signals";
 import { lazy, Suspense } from "preact/compat";
+import { Button } from "./Button";
 
 const Message = lazy(async () => import("./Message"));
 const Fallback = () => <p>Loading...</p>;
@@ -16,14 +17,14 @@ export default function Counter({ children, count }: Props) {
 
   return (
     <>
-      <div class="flex justify-center items-center gap-4 w-fit">
-        <button className="cursor-pointer" onClick={subtract}>
+      <div class="flex justify-center items-center gap-4 w-fit bg-teal-900/50 rounded-md">
+        <Button variant="default" size="default" onClick={subtract}>
           -
-        </button>
+        </Button>
         <pre>{count}</pre>
-        <button className="cursor-pointer" onClick={add}>
+        <Button variant="default" size="default" onClick={add}>
           +
-        </button>
+        </Button>
       </div>
       <Suspense fallback={Fallback}>
         <Message>{children}</Message>
