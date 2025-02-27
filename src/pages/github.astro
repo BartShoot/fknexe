@@ -1,75 +1,58 @@
----
-export const partial = true;
----
+<html>
+<head>
+  <title>GitHub API Example</title>
+  <style>
+    pre { background: #f5f5f5; padding: 1em; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>GitHub API Example</h1>
+  <div id="result">Loading...</div>
   <script>
-    // GitHub API client
-    class GitHubClient {
-      constructor() {
-        this.baseUrl = 'https://api.github.com';
-        this.headers = {
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'astro-github-client'
-        };
-      }
-      
-      async request(endpoint, params = {}) {
-        const url = new URL(`${this.baseUrl}${endpoint}`);
+    import {GitHubClient } from '../clients/GithubClient.ts'
+    
+    async function main() {
+      try {
+        // Get query parameters
+        const params = new URLSearchParams(window.location.search);
+        const user = params.get('user') || 'withastro';
+        const repo = params.get('repo') || 'astro';
+        const action = params.get('action') || 'latest-release';
         
-        Object.entries(params).forEach(([key, value]) => {
-          if (value) url.searchParams.append(key, value.toString());
-        });
+        // Create client instance
+        const client = new GitHubClient();
         
-        try {
-          const response = await fetch(url.toString(), { headers: this.headers });
-          
-          if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
-          }
-          
-          return await response.json();
-        } catch (error) {
-          return { error: error.message || 'Failed to fetch from GitHub API' };
+        // Call appropriate method based on action
+        let data;
+        switch (action) {
+          case 'latest-release':
+            data = await client.getLatestRelease(user, repo);
+            break;
+          case 'releases':
+            data = await client.getReleases(user, repo);
+            break;
+          case 'readme':
+            data = await client.getReadme(user, repo);
+            break;
+          default:
+            throw new Error(`Unknown action: ${action}`);
         }
+        
+        // Display result
+        document.getElementById('result').innerHTML = `
+          <h2>Results for ${user}/${repo} (${action})</h2>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        document.getElementById('result').innerHTML = `
+          <h2>Error</h2>
+          <pre>${error.message}</pre>
+        `;
       }
     }
     
-    // Initialize client and parse URL params
-    const githubClient = new GitHubClient();
-    const urlParams = new URLSearchParams(window.location.search);
-    const user = urlParams.get('user');
-    const repo = urlParams.get('repo');
-    const action = urlParams.get('action') || 'readme';
-    
-    // Function to handle the API request and return JSON
-    async function handleRequest() {
-      if (!user || !repo) {
-        return { error: 'Missing required parameters: user and repo' };
-      }
-      
-      let endpoint;
-      switch (action) {
-        case 'latest-release':
-          endpoint = `/repos/${user}/${repo}/releases/latest`;
-          break;
-        case 'releases':
-          endpoint = `/repos/${user}/${repo}/releases`;
-          break;
-        case 'readme':
-          endpoint = `/repos/${user}/${repo}/readme`;
-          break;
-        default:
-          return { error: `Unsupported action: ${action}` };
-      }
-      
-      return await githubClient.request(endpoint);
-    }
-    
-    // Execute the request and replace the document with JSON
-    handleRequest().then(data => {
-      // Set content type and replace document with JSON data
-      document.open('text/plain');
-      document.write(JSON.stringify(data));
-      document.close();
-    });
+    // Run on page load
+    main();
   </script>
-
+</body>
+</html>
