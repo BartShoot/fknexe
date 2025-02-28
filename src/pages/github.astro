@@ -14,8 +14,7 @@
     <h1>GitHub API Example</h1>
     <div id="result">Loading...</div>
     <script>
-      import { GitHubClient } from "../clients/GithubClient.ts";
-
+      import { GitHubClient as client } from "../clients/GithubClient.ts";
       async function main() {
         try {
           // Get query parameters
@@ -23,9 +22,6 @@
           const user = params.get("user") || "withastro";
           const repo = params.get("repo") || "astro";
           const action = params.get("action") || "latest-release";
-
-          // Create client instance
-          const client = new GitHubClient();
 
           // Call appropriate method based on action
           let data;
