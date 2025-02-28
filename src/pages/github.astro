@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>GitHub API Example</title>
+    <style>
+      pre {
+        background: #f5f5f5;
+        padding: 1em;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub API Example</h1>
+    <div id="result">Loading...</div>
+    <script>
+      import { GitHubClient as client } from "../clients/GithubClient.ts";
+      async function main() {
+        try {
+          // Get query parameters
+          const params = new URLSearchParams(window.location.search);
+          const user = params.get("user") || "withastro";
+          const repo = params.get("repo") || "astro";
+          const action = params.get("action") || "latest-release";
+          // Call appropriate method based on action
+          let data;
+          switch (action) {
+            case "latest-release":
+              data = await client.getLatestRelease(user, repo);
+              break;
+            case "releases":
+              data = await client.getReleases(user, repo);
+              break;
+            case "readme":
+              data = await client.getReadme(user, repo);
+              break;
+            default:
+              throw new Error(`Unknown action: ${action}`);
+          }
+
+          // Display result
+          document.getElementById("result").innerHTML = `
+          <h2>Results for ${user}/${repo} (${action})</h2>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+        } catch (error) {
+          document.getElementById("result").innerHTML = `
+          <h2>Error</h2>
+          <pre>${error.message}</pre>
+        `;
+        }
+      }
+
+      // Run on page load
+      main();
+    </script>
+  </body>
+</html>
