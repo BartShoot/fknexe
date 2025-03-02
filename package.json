@@ -8,8 +8,6 @@
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
-    "lint": "eslint --fix",
-    "lint:all": "npm run check && npm run lint && npm run format",
     "prepare": "husky"
   },
   "dependencies": {
