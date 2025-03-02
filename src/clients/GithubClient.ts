@@ -5,6 +5,8 @@ import type {
   IGitHubRelease,
   ILatestRelease,
   IRelease,
+  IRepoSearchResponse,
+  IUserSearchResponse,
 } from "../lib/types";
 
 class GitHubClient {
@@ -107,6 +109,33 @@ class GitHubClient {
       `/repos/${user}/${repo}/readme`,
     );
     return atob(response.content);
+  }
+
+  /**
+   * Search for user accounts
+   * @param query with GitHub username or organization
+   * @returns Promise with any :)
+   * */
+  async searchUsers(query: string): Promise<IUserSearchResponse> {
+    const response = await this.request<any>(`/search/users?q=${query}`);
+    return response;
+  }
+
+  /**
+   * Search for repositories
+   * @param query with repository name
+   * @param optional user GitHub username or organization
+   * @returns Promise with any :)
+   * */
+  async searchRepositories(
+    query: string,
+    user: string | null,
+  ): Promise<IRepoSearchResponse> {
+    const userQuery = user ? `+user:${user}` : "";
+    const response = await this.request<any>(
+      `/search/repositories?q=${query}${userQuery}`,
+    );
+    return response;
   }
 }
 
