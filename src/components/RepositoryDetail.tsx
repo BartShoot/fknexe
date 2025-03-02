@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "react";
 import { parseAsString, useQueryState } from "nuqs";
 import { GitHubClient } from "../clients/GithubClient";
 import { Button } from "./Button";
@@ -7,7 +7,7 @@ import {
   getAppropriateAsset,
   type SupportedOS,
 } from "@/lib/utils/detectOS";
-import type { ILatestRelease } from "@/lib/types";
+import type { ILatestRelease } from "../lib/types";
 
 export function RepositoryDetail() {
   const [username] = useQueryState("u", parseAsString);
