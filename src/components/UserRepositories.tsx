@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "react";
 import { useQueryState, parseAsString } from "nuqs";
 import { GitHubClient } from "../clients/GithubClient";
 import { Button } from "./Button";
