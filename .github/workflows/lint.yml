@@ -20,11 +20,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
           
       - name: Install packages
-        run: npm i
+        run: npm ci
         
   build:
     needs: install
@@ -39,11 +39,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
           
       - name: Install packages
-        run: npm i
+        run: npm ci
         
       - name: Build project
         run: npm run build
@@ -63,11 +63,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
           
       - name: Install packages
-        run: npm i
+        run: npm ci
         
       - name: Run lint:all
         env:
