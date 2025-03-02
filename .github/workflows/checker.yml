@@ -1,0 +1,62 @@
+name: Checker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  NODE_VERSION: 22
+  NODE_CACHE_KEY: 'npm'
+
+jobs:
+  install-and-validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [build, typescript, prettier, eslint]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: ${{ env.NODE_CACHE_KEY }}
+          
+      - name: Install packages
+        run: npm ci
+        
+      - name: Run build check
+        if: matrix.task == 'build'
+        run: npm run check:build
+        
+      - name: Run TypeScript check
+        if: matrix.task == 'typescript'
+        run: npm run check:typescript
+        
+      - name: Run Prettier check
+        if: matrix.task == 'prettier'
+        run: npm run check:prettier
+        
+      - name: Run ESLint check
+        if: matrix.task == 'eslint'
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+        run: npm run check:eslint -- . --config eslint.config.js --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
+        continue-on-error: true
+
+      - name: Upload CodeQL analysis results to GitHub
+        if: matrix.task == 'eslint'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: eslint-results.sarif
+          wait-for-processing: true

@@ -1,4 +1,8 @@
 /**/*.*
+!*.js
+!*.cjs
+!*.mjs
+!*.ts
 !src/**/*.js
 !src/**/*.jsx
 !src/**/*.ts

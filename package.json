@@ -6,8 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check",
     "format": "prettier --write .",
+    "check:build": "astro build",
+    "check:prettier": "prettier --check .",
+    "check:typescript": "astro check",
+    "check:eslint": "eslint",
     "prepare": "husky"
   },
   "dependencies": {
@@ -23,6 +26,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.4",
     "@eslint/js": "9.21.0",
+    "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@typescript-eslint/parser": "8.25.0",
     "autoprefixer": "10.4.20",
     "cssnano": "7.0.6",
