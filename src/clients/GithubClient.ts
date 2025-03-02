@@ -127,7 +127,10 @@ class GitHubClient {
    * @param optional user GitHub username or organization
    * @returns Promise with any :)
    * */
-  async searchRepositories(query: string, user: string | null): Promise<IRepoSearchResponse> {
+  async searchRepositories(
+    query: string,
+    user: string | null,
+  ): Promise<IRepoSearchResponse> {
     const userQuery = user ? `+user:${user}` : "";
     const response = await this.request<any>(
       `/search/repositories?q=${query}${userQuery}`,
