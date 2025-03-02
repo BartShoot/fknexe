@@ -1,7 +1,6 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { RepositoryDetail } from "../../components/RepositoryDetail";
-import { NuqsProvider } from "../../components/NuqsProvider";
+import Layout from "@/layouts/Layout.astro";
+import { RepositoryDetail } from "@/components/RepositoryDetail";
 ---
 
 <Layout>
@@ -12,9 +11,7 @@ import { NuqsProvider } from "../../components/NuqsProvider";
       >
     </div>
 
-    <NuqsProvider client:load>
-      <RepositoryDetail client:load />
-    </NuqsProvider>
+    <RepositoryDetail client:load />
 
     <footer class="text-center text-gray-500 text-sm mt-20">
       brought to you by smelly nerds

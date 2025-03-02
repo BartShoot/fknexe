@@ -8,8 +8,9 @@ import {
   type SupportedOS,
 } from "@/lib/utils/detectOS";
 import type { ILatestRelease } from "../lib/types";
+import { withNuqsAdapter } from "./NuqsProvider";
 
-export function RepositoryDetail() {
+function _RepositoryDetail() {
   const [username] = useQueryState("u", parseAsString);
   const [repoName] = useQueryState("r", parseAsString);
 
@@ -136,3 +137,5 @@ export function RepositoryDetail() {
     </div>
   );
 }
+
+export const RepositoryDetail = withNuqsAdapter(_RepositoryDetail);

@@ -3,8 +3,9 @@ import { useQueryState, parseAsString } from "nuqs";
 import { GitHubClient } from "../clients/GithubClient";
 import { Button } from "./Button";
 import type { IRepoSearchResultItem } from "../lib/types";
+import { withNuqsAdapter } from "./NuqsProvider";
 
-export function UserRepositories() {
+function _UserRepositories() {
   const [username] = useQueryState("u", parseAsString);
   const [repositories, setRepositories] = useState<IRepoSearchResultItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,3 +75,5 @@ export function UserRepositories() {
     </div>
   );
 }
+
+export const UserRepositories = withNuqsAdapter(_UserRepositories);

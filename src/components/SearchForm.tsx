@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "./Button";
+import { withNuqsAdapter } from "./NuqsProvider";
 
-export function SearchForm() {
+function _SearchForm() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,3 +38,5 @@ export function SearchForm() {
     </form>
   );
 }
+
+export const SearchForm = withNuqsAdapter(_SearchForm);
