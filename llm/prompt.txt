@@ -1,0 +1,61 @@
+# GitHub Binary Downloader (fknexe) Project Prompt
+
+## Project Overview
+"fknexe" is a deliberately minimalistic application designed to simplify the process of downloading binary files from GitHub repositories. The project addresses a common pain point experienced by non-technical users who find GitHub's developer-oriented interface confusing when they simply want to download and run an application.
+
+## Core Concept
+The application serves as an intermediary between GitHub repositories and non-technical users, providing a clean, straightforward interface focused exclusively on helping users find and download executable files without requiring any knowledge of code, repositories, or development concepts.
+
+## Key Features
+
+1. **Simple Repository Search:** Allow users to search for GitHub repositories by name
+2. **Repository Listing:** Display search results in a clean, uncluttered format
+3. **Repository View:** Show only essential information - primarily the README and a prominent download button
+4. **OS-Aware Downloads:** Automatically detect the user's operating system and offer the appropriate binary version
+5. **Client-Side Only:** Function as a purely static, client-side application
+6. **State Management:** Preserve state using the nuqs library
+7. **Minimalistic Design:** Create an interface so simple that even a young child could navigate it
+
+## Technical Requirements
+
+1. **Framework:** Continue with Astro.js and Preact as currently set up
+2. **GitHub API Integration:** Expand on the existing GitHub client to support:
+   - Repository searching
+   - Binary/release detection
+   - OS detection for appropriate downloads
+3. **Client-Side Only:** No server components - everything runs in the browser
+4. **State Management:** Implement nuqs for maintaining state in URL parameters
+5. **Responsive Design:** Simple but effective across all device sizes
+
+## Implementation Plan
+
+### Phase 1: Core GitHub API Integration
+- Enhance the existing GitHub client to support repository search
+- Add functionality to detect and list release assets
+- Implement OS detection for suggesting appropriate binaries
+
+### Phase 2: User Interface Development
+- Create a minimalistic search interface
+- Develop the repository listing view
+- Build the single repository view with README display
+- Implement the prominent "DOWNLOAD" button with OS-aware functionality
+
+### Phase 3: State Management and Refinement
+- Integrate nuqs for state management through URL parameters
+- Ensure responsive design works across device sizes
+- Add the ironic footer: "brought to you by smelly nerds"
+
+## Design Philosophy
+The entire application should embrace a "less is more" approach, with an almost aggressively simple interface. The goal is to make the application so intuitive that users with zero technical knowledge can easily find and download the binaries they need without confusion.
+
+## Additional Notes
+- The project's name "fknexe" and its minimalist approach are an ironic response to the viral Reddit post expressing frustration with GitHub's developer-centric nature
+- The humor should be subtle but present, particularly in the footer
+- Despite the humor, the tool should genuinely solve the problem of making GitHub releases more accessible to non-technical users
+
+## Success Criteria
+- A non-technical user can search for a repository, view it, and download the appropriate binary for their OS in under 30 seconds with no prior instruction
+- The interface is self-explanatory with no technical terminology that would confuse a non-technical user
+- The application successfully detects and offers the correct binary for the user's operating system
+
+This project balances solving a genuine usability problem while also serving as a lighthearted commentary on the sometimes unnecessarily complex developer tools that alienate regular users.
