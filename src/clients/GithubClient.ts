@@ -106,11 +106,7 @@ class GitHubClient {
     const response = await this.request<IGitHubReadme>(
       `/repos/${user}/${repo}/readme`,
     );
-    const content = new TextDecoder().decode(
-      Uint8Array.from(atob(response.content), (c) => c.charCodeAt(0)),
-    );
-    const formatted = content.replace(/\n/g, "<br>");
-    return formatted;
+    return atob(response.content);
   }
 }
 
