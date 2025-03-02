@@ -1,5 +1,5 @@
 import { cva, cx, type VariantProps } from "cva";
-import { forwardRef, type ButtonHTMLAttributes } from "preact/compat";
+import { forwardRef, type HTMLAttributes } from "react";
 
 const variants = cva({
   base: "cursor-pointer inline-flex items-center justify-center align-middle rounded-md",
@@ -20,10 +20,10 @@ const variants = cva({
 type IElement = HTMLButtonElement;
 
 export interface IProps
-  extends ButtonHTMLAttributes<IElement>,
+  extends HTMLAttributes<IElement>,
     VariantProps<typeof variants> {}
 
-const Component = forwardRef<IElement, IProps>(
+const Button = forwardRef<IElement, IProps>(
   ({ className, children, variant, size, ...props }, ref) => (
     <button
       {...props}
@@ -35,10 +35,6 @@ const Component = forwardRef<IElement, IProps>(
   ),
 );
 
-Component.displayName = "Button";
+Button.displayName = "Button";
 
-export {
-  Component as Button,
-  variants as ButtonVariants,
-  type IProps as IButtonProps,
-};
+export { Button, variants as ButtonVariants, type IProps as IButtonProps };
