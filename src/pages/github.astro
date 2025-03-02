@@ -51,7 +51,7 @@
           if (result) {
             result.innerHTML = `
               <h2>Error</h2>
-              <pre>${(error as any).message}</pre>
+              <pre>${(error as { message: string }).message}</pre>
             `;
           }
         }

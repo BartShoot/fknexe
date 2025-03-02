@@ -1,4 +1,7 @@
-llm
-dist
-node_modules
-public
+/**/*.*
+!src/**/*.js
+!src/**/*.jsx
+!src/**/*.ts
+!src/**/*.tsx
+!src/**/*.astro
+!src/**/*.css

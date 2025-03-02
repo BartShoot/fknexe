@@ -1,4 +1,3 @@
 export default {
-  "*": "astro check",
-  "*.{js,jsx,ts,tsx,css,astro}": "prettier --write",
+  "*": ["astro check", "eslint --fix", "prettier --write"],
 };
