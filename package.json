@@ -6,9 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
+    "check": "astro check",
     "format": "prettier --write .",
     "lint": "eslint --fix",
+    "lint:all": "npm run check && npm run lint && npm run format",
     "prepare": "husky"
   },
   "dependencies": {
