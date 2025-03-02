@@ -8,7 +8,7 @@ function _SearchForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      window.location.href = `/user?u=${encodeURIComponent(searchTerm.trim())}`;
+      window.location.href = `/fknexe/user?u=${encodeURIComponent(searchTerm.trim())}`;
     }
   };
 
