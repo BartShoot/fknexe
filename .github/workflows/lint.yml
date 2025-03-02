@@ -24,7 +24,7 @@ jobs:
           cache: 'npm'
           
       - name: Install packages
-        run: npm ci
+        run: npm i
         
   build:
     needs: install
@@ -43,7 +43,7 @@ jobs:
           cache: 'npm'
           
       - name: Install packages
-        run: npm ci
+        run: npm i
         
       - name: Build project
         run: npm run build
@@ -67,7 +67,7 @@ jobs:
           cache: 'npm'
           
       - name: Install packages
-        run: npm ci
+        run: npm i
         
       - name: Run lint:all
         env:
