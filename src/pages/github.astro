@@ -19,8 +19,8 @@
         try {
           // Get query parameters
           const params = new URLSearchParams(window.location.search);
-          const user = params.get("user") || "withastro";
-          const repo = params.get("repo") || "astro";
+          const user = params.get("user") || null;
+          const repo = params.get("repo") || null;
           const action = params.get("action") || "latest-release";
           // Call appropriate method based on action
           let data;
@@ -33,6 +33,12 @@
               break;
             case "readme":
               data = await client.getReadme(user, repo);
+              break;
+            case "search-users":
+              data = await client.searchUsers(user);
+              break;
+            case "search-repos":
+              data = await client.searchRepositories(repo, user);
               break;
             default:
               throw new Error(`Unknown action: ${action}`);
