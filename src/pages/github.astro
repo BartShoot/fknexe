@@ -24,6 +24,7 @@
           const action = params.get("action") || "latest-release";
           // Call appropriate method based on action
           let data;
+          if (!user || !repo) return;
           switch (action) {
             case "latest-release":
               data = await client.getLatestRelease(user, repo);
