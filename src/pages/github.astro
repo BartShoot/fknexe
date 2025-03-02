@@ -38,16 +38,22 @@
               throw new Error(`Unknown action: ${action}`);
           }
 
+          const result = document.getElementById("result");
           // Display result
-          document.getElementById("result").innerHTML = `
-          <h2>Results for ${user}/${repo} (${action})</h2>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
+          if (result) {
+            result.innerHTML = `
+              <h2>Results for ${user}/${repo} (${action})</h2>
+              <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+          }
         } catch (error) {
-          document.getElementById("result").innerHTML = `
-          <h2>Error</h2>
-          <pre>${error.message}</pre>
-        `;
+          const result = document.getElementById("result");
+          if (result) {
+            result.innerHTML = `
+              <h2>Error</h2>
+              <pre>${(error as any).message}</pre>
+            `;
+          }
         }
       }
 
