@@ -17,7 +17,7 @@ export default function Counter({ children, count }: Props) {
 
   return (
     <>
-      <div class="flex justify-center items-center gap-4 w-fit bg-teal-900/50 rounded-md">
+      <div className="flex justify-center items-center gap-4 w-fit bg-teal-900/50 rounded-md">
         <Button variant="default" size="default" onClick={subtract}>
           -
         </Button>

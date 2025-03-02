@@ -1,1 +1,7 @@
-llm
+/**/*.*
+!src/**/*.js
+!src/**/*.jsx
+!src/**/*.ts
+!src/**/*.tsx
+!src/**/*.astro
+!src/**/*.css

@@ -104,7 +104,7 @@ class GitHubClient {
    * @param repo Repository name
    * @returns Promise with the README
    * */
-  async getReadme(user: string, repo: string): Promise<String> {
+  async getReadme(user: string, repo: string): Promise<string> {
     const response = await this.request<IGitHubReadme>(
       `/repos/${user}/${repo}/readme`,
     );

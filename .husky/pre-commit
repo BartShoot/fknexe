@@ -1,0 +1,10 @@
+# Define the rebase and merge paths
+REBASE_PATH="$(git rev-parse --git-path rebase-merge)"
+MERGE_PATH="$(git rev-parse --git-path MERGE_HEAD)"
+
+if [ -d "$REBASE_PATH" ] || [ -f "$MERGE_PATH" ]; then
+  echo "Skipping Husky pre-commit hook: We are in the middle of a rebase or merge."
+else
+  echo "Running Husky pre-commit hook: Formatting affected files"
+  npx lint-staged
+fi
