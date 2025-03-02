@@ -6,9 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
     "format": "prettier --write .",
-    "lint": "eslint --fix",
+    "check:build": "astro build",
+    "check:prettier": "prettier --check .",
+    "check:typescript": "astro check",
+    "check:eslint": "eslint",
     "prepare": "husky"
   },
   "dependencies": {
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.4",
     "@eslint/js": "9.21.0",
+    "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@typescript-eslint/parser": "8.25.0",
     "autoprefixer": "10.4.20",
     "cssnano": "7.0.6",
@@ -35,5 +38,10 @@
     "prettier": "3.5.2",
     "prettier-plugin-astro": "0.14.1",
     "typescript-eslint": "8.25.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.34.9",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.0.9",
+    "lightningcss-linux-x64-gnu": "1.29.1"
   }
 }

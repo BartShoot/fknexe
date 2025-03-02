@@ -117,8 +117,9 @@ class GitHubClient {
    * @returns Promise with any :)
    * */
   async searchUsers(query: string): Promise<IUserSearchResponse> {
-    const response = await this.request<any>(`/search/users?q=${query}`);
-    return response;
+    const response = await this.request<unknown>(`/search/users?q=${query}`);
+    // TODO: maybe add `zod` library, and add data validation instead of `as`
+    return response as IUserSearchResponse;
   }
 
   /**
@@ -132,10 +133,11 @@ class GitHubClient {
     user: string | null,
   ): Promise<IRepoSearchResponse> {
     const userQuery = user ? `+user:${user}` : "";
-    const response = await this.request<any>(
+    const response = await this.request<unknown>(
       `/search/repositories?q=${query}${userQuery}`,
     );
-    return response;
+    // TODO: maybe add `zod` library, and add data validation instead of `as`
+    return response as IRepoSearchResponse;
   }
 }
 
