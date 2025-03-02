@@ -28,7 +28,7 @@ jobs:
         
   build:
     needs: install
-    name: Build project
+    name: Astro build 
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,9 +48,31 @@ jobs:
       - name: Build project
         run: npm run build
         
+  check:
+    needs: install
+    name: Astro check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+          
+      - name: Install packages
+        run: npm ci
+        
+      - name: Run astro check
+        run: npm run check
+
   lint:
     needs: install
-    name: CodeQL Lint
+    name: Eslint + CodeQL
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -69,9 +91,6 @@ jobs:
       - name: Install packages
         run: npm ci
         
-      - name: Run astro check
-        run: npx astro check
-
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
