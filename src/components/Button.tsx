@@ -1,5 +1,5 @@
 import { cva, cx, type VariantProps } from "cva";
-import { forwardRef, type HTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 const variants = cva({
   base: "cursor-pointer inline-flex items-center justify-center align-middle rounded-md",
@@ -20,7 +20,7 @@ const variants = cva({
 type IElement = HTMLButtonElement;
 
 export interface IProps
-  extends HTMLAttributes<IElement>,
+  extends ButtonHTMLAttributes<IElement>,
     VariantProps<typeof variants> {}
 
 const Button = forwardRef<IElement, IProps>(

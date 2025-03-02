@@ -1,10 +1,10 @@
-import { useState } from "preact/hooks";
+import React, { useState } from "react";
 import { Button } from "./Button";
 
 export function SearchForm() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSubmit = (e: Event) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       window.location.href = `/user?u=${encodeURIComponent(searchTerm.trim())}`;
@@ -26,7 +26,7 @@ export function SearchForm() {
           type="text"
           placeholder="Enter GitHub username..."
           value={searchTerm}
-          onInput={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="GitHub username"
         />
