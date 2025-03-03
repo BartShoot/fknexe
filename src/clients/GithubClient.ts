@@ -108,9 +108,19 @@ class GitHubClient {
     const response = await this.request<IGitHubReadme>(
       `/repos/${user}/${repo}/readme`,
     );
-    return atob(response.content);
+    return this.b64DecodeUnicode(response.content);
   }
 
+  b64DecodeUnicode(str: string) {
+    return decodeURIComponent(
+      atob(str)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
+  }
   /**
    * Search for user accounts
    * @param query with GitHub username or organization
