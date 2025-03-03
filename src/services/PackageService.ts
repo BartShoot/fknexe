@@ -1,29 +1,25 @@
 import { GitHubClient as client } from "@/clients/GithubClient.ts";
 import type { IAsset } from "@/lib/types";
 import { UAParser } from "ua-parser-js";
-import { OS, Browser, CPU } from "ua-parser-js/enums";
 
 class PackageService {
   async getRankedPackages(user: string, repo: string, userAgent: string) {
     const latestRelease = await client.getLatestRelease(user, repo);
     const parsedUA = UAParser(userAgent);
-    console.log(parsedUA);
-    console.log(OS);
-    console.log(Browser);
-    console.log(CPU);
-    const rankedPackages = this.rankPackages(
-      latestRelease.assets,
-      parsedUA,
-    ).sort((a, b) => {
-      if (a.score < b.score) {
-        return 1;
-      }
-      if (a.score > b.score) {
-        return -1;
-      }
-      return 0;
-    });
-    return { ...latestRelease, ...rankedPackages };
+    const rankedPackages = {
+      ranked_packages: this.rankPackages(latestRelease.assets, parsedUA).sort(
+        (a, b) => {
+          const bHasOS = b.matches.exact_match.includes("OS");
+          const aHasOS = a.matches.exact_match.includes("OS");
+          return (
+            b.score - a.score ||
+            ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
+            b.downloadCount - a.downloadCount
+          );
+        },
+      ),
+    };
+    return { ...rankedPackages, ...latestRelease };
   }
 
   rankPackages(packages: IAsset[], ua: UAParser.IResult) {
@@ -48,7 +44,7 @@ class PackageService {
       score++;
       matches.exact_match.push("Architecture");
     }
-    // TODO: file extensions, fuzzy search
+    // TODO: file extensions, fuzzy search/synonyms
     return {
       score,
       matches,
