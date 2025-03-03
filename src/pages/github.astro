@@ -15,6 +15,7 @@
     <div id="result">Loading...</div>
     <script>
       import { GitHubClient as client } from "@/clients/GithubClient.ts";
+      import { PackageService as packageService } from "@/services/PackageService.ts";
       async function main() {
         try {
           // Get query parameters
@@ -28,6 +29,13 @@
           switch (action) {
             case "latest-release":
               data = await client.getLatestRelease(user, repo);
+              break;
+            case "best-release":
+              data = await packageService.getRankedPackages(
+                user,
+                repo,
+                navigator.userAgent,
+              );
               break;
             case "releases":
               data = await client.getReleases(user, repo);
