@@ -1,79 +1,18 @@
-<html>
-  <head>
-    <title>GitHub API Example</title>
-    <style>
-      pre {
-        background: #f5f5f5;
-        padding: 1em;
-        border-radius: 4px;
-        overflow-x: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>GitHub API Example</h1>
-    <div id="result">Loading...</div>
-    <script>
-      import { GitHubClient as client } from "@/clients/GithubClient.ts";
-      import { PackageService as packageService } from "@/services/PackageService.ts";
-      async function main() {
-        try {
-          // Get query parameters
-          const params = new URLSearchParams(window.location.search);
-          const user = params.get("user") || null;
-          const repo = params.get("repo") || null;
-          const action = params.get("action") || "latest-release";
-          // Call appropriate method based on action
-          let data;
-          if (!user || !repo) return;
-          switch (action) {
-            case "latest-release":
-              data = await client.getLatestRelease(user, repo);
-              break;
-            case "best-release":
-              data = await packageService.getRankedPackages(
-                user,
-                repo,
-                navigator.userAgent,
-              );
-              break;
-            case "releases":
-              data = await client.getReleases(user, repo);
-              break;
-            case "readme":
-              data = await client.getReadme(user, repo);
-              break;
-            case "search-users":
-              data = await client.searchUsers(user);
-              break;
-            case "search-repos":
-              data = await client.searchRepositories(repo, user);
-              break;
-            default:
-              throw new Error(`Unknown action: ${action}`);
-          }
+---
+import Layout from "@/layouts/Layout.astro";
+import { GitHubApiTester } from "@/components/GithubClientTester";
+---
 
-          const result = document.getElementById("result");
-          // Display result
-          if (result) {
-            result.innerHTML = `
-              <h2>Results for ${user}/${repo} (${action})</h2>
-              <pre>${JSON.stringify(data, null, 2)}</pre>
-            `;
-          }
-        } catch (error) {
-          const result = document.getElementById("result");
-          if (result) {
-            result.innerHTML = `
-              <h2>Error</h2>
-              <pre>${(error as { message: string }).message}</pre>
-            `;
-          }
-        }
-      }
+<Layout>
+  <main class="container mx-auto py-12 px-4">
+    <GitHubApiTester client:load />
 
-      // Run on page load
-      main();
-    </script>
-  </body>
-</html>
+    <footer class="text-center text-gray-500 text-sm mt-20">
+      <p>This is a development-only page for testing the GitHub API client.</p>
+      <p>
+        It's excluded from production builds thanks to the underscore prefix in
+        the filename.
+      </p>
+    </footer>
+  </main>
+</Layout>
