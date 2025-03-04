@@ -6,19 +6,18 @@ class PackageService {
   async getRankedPackages(user: string, repo: string, userAgent: string) {
     const latestRelease = await client.getLatestRelease(user, repo);
     const parsedUA = UAParser(userAgent);
-    const rankedPackages = {
-      ranked_packages: this.rankPackages(latestRelease.assets, parsedUA).sort(
-        (a, b) => {
-          const bHasOS = b.matchInfo.matches.exact_match.includes("OS");
-          const aHasOS = a.matchInfo.matches.exact_match.includes("OS");
-          return (
-            b.matchInfo.score - a.matchInfo.score ||
-            ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
-            b.package.downloadCount - a.package.downloadCount
-          );
-        },
-      ),
-    };
+    const rankedPackages = this.rankPackages(
+      latestRelease.assets,
+      parsedUA,
+    ).sort((a, b) => {
+      const bHasOS = b.matchInfo.matches.exact_match.includes("OS");
+      const aHasOS = a.matchInfo.matches.exact_match.includes("OS");
+      return (
+        b.matchInfo.score - a.matchInfo.score ||
+        ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
+        b.package.downloadCount - a.package.downloadCount
+      );
+    });
     delete (latestRelease as { assets?: IAsset[] }).assets;
     return { latestRelease, rankedPackages };
   }
