@@ -108,18 +108,7 @@ class GitHubClient {
     const response = await this.request<IGitHubReadme>(
       `/repos/${user}/${repo}/readme`,
     );
-    return this.b64DecodeUnicode(response.content);
-  }
-
-  b64DecodeUnicode(str: string) {
-    return decodeURIComponent(
-      atob(str)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join(""),
-    );
+    return base64Decode(response.content);
   }
   /**
    * Search for user accounts
@@ -149,6 +138,12 @@ class GitHubClient {
     // TODO: maybe add `zod` library, and add data validation instead of `as`
     return response as IRepoSearchResponse;
   }
+}
+
+function base64Decode(base64String: string): string {
+  return new TextDecoder().decode(
+    Uint8Array.from(atob(base64String), (m) => m.charCodeAt(0)),
+  );
 }
 
 const defaultClient = new GitHubClient();
