@@ -9,23 +9,24 @@ class PackageService {
     const rankedPackages = {
       ranked_packages: this.rankPackages(latestRelease.assets, parsedUA).sort(
         (a, b) => {
-          const bHasOS = b.matches.exact_match.includes("OS");
-          const aHasOS = a.matches.exact_match.includes("OS");
+          const bHasOS = b.matchInfo.matches.exact_match.includes("OS");
+          const aHasOS = a.matchInfo.matches.exact_match.includes("OS");
           return (
-            b.score - a.score ||
+            b.matchInfo.score - a.matchInfo.score ||
             ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
-            b.downloadCount - a.downloadCount
+            b.package.downloadCount - a.package.downloadCount
           );
         },
       ),
     };
-    return { ...rankedPackages, ...latestRelease };
+    delete (latestRelease as { assets?: IAsset[] }).assets;
+    return { latestRelease, rankedPackages };
   }
 
   rankPackages(packages: IAsset[], ua: UAParser.IResult) {
-    return packages.map((p) => {
-      const matchInfo = this.matchInfo(p, ua);
-      return { ...p, ...matchInfo };
+    return packages.map((pkg) => {
+      const matchInfo = this.matchInfo(pkg, ua);
+      return { package: pkg, matchInfo };
     });
   }
 
