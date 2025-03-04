@@ -3,9 +3,11 @@ import { GitHubClient } from "../clients/GithubClient";
 import { Button } from "./Button";
 import { withNuqsAdapter } from "./NuqsProvider";
 import { parseAsString, useQueryState } from "nuqs";
+import { PackageService } from "@/services/PackageService";
 
 type ApiAction =
   | "latest-release"
+  | "ranked-release"
   | "releases"
   | "readme"
   | "search-users"
@@ -100,6 +102,7 @@ const ResultDisplay = ({ action, result, error }: ResultDisplayProps) => {
 // Configuration for API actions
 const API_ACTIONS = [
   { value: "latest-release", label: "Get Latest Release" },
+  { value: "ranked-release", label: "Get Ranked Release" },
   { value: "releases", label: "Get All Releases" },
   { value: "readme", label: "Get README" },
   { value: "search-users", label: "Search Users" },
@@ -108,7 +111,9 @@ const API_ACTIONS = [
 
 // Helper to check if an action needs repository field
 const needsRepo = (action: ApiAction): boolean => {
-  return ["latest-release", "releases", "readme"].includes(action);
+  return ["latest-release", "releases", "readme", "ranked-release"].includes(
+    action,
+  );
 };
 
 // Helper to check if an action needs search query field
@@ -119,7 +124,7 @@ const needsSearchQuery = (action: ApiAction): boolean => {
 function _GitHubApiTester({
   defaultUser = "rustdesk",
   defaultRepo = "rustdesk",
-  defaultAction = "latest-release",
+  defaultAction = "ranked-release",
 }: GitHubApiTesterProps) {
   // Use Nuqs for storing API parameters in the URL
   const [action, setAction] = useQueryState(
@@ -172,6 +177,12 @@ function _GitHubApiTester({
     switch (currentAction) {
       case "latest-release":
         return await GitHubClient.getLatestRelease(user!, repo!);
+      case "ranked-release":
+        return await PackageService.getRankedPackages(
+          user!,
+          repo!,
+          navigator.userAgent,
+        );
       case "releases":
         return await GitHubClient.getReleases(user!, repo!);
       case "readme":
