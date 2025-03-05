@@ -63,7 +63,7 @@ function _UserRepositories() {
                 ⭐ {repo.stargazers_count}
               </span>
               <a
-                href={`/fknexe/user/repository?u=${encodeURIComponent(username || "")}&r=${encodeURIComponent(repo.name)}`}
+                href={`/user/repository?u=${encodeURIComponent(username || "")}&r=${encodeURIComponent(repo.name)}`}
                 className="block"
               >
                 <Button>View Details</Button>
