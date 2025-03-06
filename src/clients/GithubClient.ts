@@ -108,9 +108,8 @@ class GitHubClient {
     const response = await this.request<IGitHubReadme>(
       `/repos/${user}/${repo}/readme`,
     );
-    return atob(response.content);
+    return base64Decode(response.content);
   }
-
   /**
    * Search for user accounts
    * @param query with GitHub username or organization
@@ -139,6 +138,12 @@ class GitHubClient {
     // TODO: maybe add `zod` library, and add data validation instead of `as`
     return response as IRepoSearchResponse;
   }
+}
+
+function base64Decode(base64String: string): string {
+  return new TextDecoder().decode(
+    Uint8Array.from(atob(base64String), (m) => m.charCodeAt(0)),
+  );
 }
 
 const defaultClient = new GitHubClient();
