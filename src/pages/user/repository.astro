@@ -1,20 +1,18 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import { RepositoryDetail } from "@/components/RepositoryDetail";
+import Layout from '@/layouts/Layout.astro'
+import { RepositoryDetail } from '@/components/RepositoryDetail'
 ---
 
 <Layout>
-  <main class="container mx-auto py-12 px-4">
-    <div class="mb-6">
-      <a href="javascript:history.back()" class="text-blue-500 hover:underline"
+  <main class='container mx-auto py-12 px-4'>
+    <div class='mb-6'>
+      <a href='javascript:history.back()' class='text-blue-500 hover:underline'
         >&larr; Back to Repositories</a
       >
     </div>
 
     <RepositoryDetail client:load />
 
-    <footer class="text-center text-gray-500 text-sm mt-20">
-      brought to you by smelly nerds
-    </footer>
+    <footer class='text-center text-gray-500 text-sm mt-20'>brought to you by smelly nerds</footer>
   </main>
 </Layout>
