@@ -19,15 +19,15 @@
     "@astrojs/react": "4.2.1",
     "@octokit/request-error": "6.1.7",
     "@octokit/rest": "21.1.1",
-    "@tailwindcss/vite": "4.0.9",
-    "astro": "5.3.1",
+    "@tailwindcss/vite": "4.0.11",
+    "astro": "5.4.2",
     "cva": "1.0.0-beta.3",
-    "nuqs": "2.4.0",
+    "nuqs": "2.4.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwind-merge": "3.0.2",
-    "tailwindcss": "4.0.9",
-    "typescript": "5.7.3"
+    "tailwindcss": "4.0.11",
+    "typescript": "5.8.2"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.4",
@@ -36,7 +36,7 @@
     "@size-limit/preset-app": "11.2.0",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
-    "@typescript-eslint/parser": "8.25.0",
+    "@typescript-eslint/parser": "8.26.0",
     "autoprefixer": "10.4.20",
     "concurrently": "9.1.2",
     "cssnano": "7.0.6",
@@ -45,15 +45,15 @@
     "globals": "16.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.4.3",
-    "prettier": "3.5.2",
+    "prettier": "3.5.3",
     "prettier-plugin-astro": "0.14.1",
     "size-limit": "11.2.0",
-    "typescript-eslint": "8.25.0"
+    "typescript-eslint": "8.26.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.34.9",
-    "@tailwindcss/oxide-linux-x64-gnu": "4.0.9",
-    "lightningcss-linux-x64-gnu": "1.29.1"
+    "@tailwindcss/oxide-linux-x64-gnu": "4.0.11",
+    "lightningcss-linux-x64-gnu": "1.29.2"
   },
   "size-limit": [
     {
