@@ -1,7 +1,6 @@
-import { NuqsAdapter } from "nuqs/adapters/react";
+import { NuqsAdapter } from 'nuqs/adapters/react'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type WrappedComponentProps = React.ComponentProps<any>;
+type WrappedComponentProps = React.ComponentProps<any>
 
 export const withNuqsAdapter = <P extends WrappedComponentProps>(
   WrappedComponent: React.ComponentType<P>,
@@ -12,6 +11,6 @@ export const withNuqsAdapter = <P extends WrappedComponentProps>(
         {/* @ts-expect-error wrong types */}
         <WrappedComponent {...props} />
       </NuqsAdapter>
-    );
-  };
-};
+    )
+  }
+}

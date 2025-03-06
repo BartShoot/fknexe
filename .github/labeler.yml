@@ -1,0 +1,98 @@
+# Core configuration files
+config:
+- changed-files:
+  - any-glob-to-any-file: 
+    - '*.config.*'
+    - '.github/**'
+    - '.husky/**'
+    - '.vscode/**'
+    - 'tsconfig.json'
+    - 'package.json'
+    - '.prettierrc'
+    - '.prettierignore'
+    - 'eslint.config.js'
+    - 'lint-staged.config.mjs'
+    - 'postcss.config.mjs'
+    - 'cva.config.ts'
+
+# GitHub workflows and CI
+ci:
+- changed-files:
+  - any-glob-to-any-file: '.github/workflows/**/*'
+
+# Documentation
+documentation:
+- changed-files:
+  - any-glob-to-any-file: '**/*.md'
+
+# Dependencies
+dependencies:
+- changed-files:
+  - any-glob-to-any-file: 'package.json'
+
+# Frontend code 
+frontend:
+- changed-files:
+  - any-glob-to-any-file: 'src/**/*'
+
+# Components
+components:
+- changed-files:
+  - any-glob-to-any-file: 'src/components/**/*'
+
+# Pages
+pages:
+- changed-files:
+  - any-glob-to-any-file: 'src/pages/**/*'
+
+# Layouts
+layouts:
+- changed-files:
+  - any-glob-to-any-file: 'src/layouts/**/*'
+
+# Utility functions
+utils:
+- changed-files:
+  - any-glob-to-any-file: 'src/lib/utils/**/*'
+
+# GitHub API client
+github-api:
+- changed-files:
+  - any-glob-to-any-file: 'src/clients/github/**/*'
+
+# Styles
+styles:
+- changed-files:
+  - any-glob-to-any-file: 'src/styles/**/*'
+
+# React components
+react:
+- changed-files:
+  - any-glob-to-any-file: 
+    - '**/*.tsx'
+    - '**/*.jsx'
+
+# TypeScript
+typescript:
+- changed-files:
+  - any-glob-to-any-file: '**/*.ts'
+
+# Astro files
+astro:
+- changed-files:
+  - any-glob-to-any-file: '**/*.astro'
+
+# User experience changes
+user-experience:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/components/Button.tsx'
+    - 'src/components/SearchForm.tsx'
+    - 'src/components/UserRepositories.tsx'
+    - 'src/components/RepositoryDetail.tsx'
+    - 'src/pages/**/*'
+
+# Feature: OS detection
+os-detection:
+- changed-files:
+  - any-glob-to-any-file: 'src/lib/utils/detectOS.tsx'

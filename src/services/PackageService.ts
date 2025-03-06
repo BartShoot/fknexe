@@ -1,5 +1,6 @@
-import { GitHubClient as client } from "@/clients/GithubClient.ts";
-import type { IAsset } from "@/lib/types";
+// import { GitHubClient as client } from "@/clients/GithubClient.ts";
+// import type { IAsset } from "@/lib/types";
+import { GithubApi, type GithubResponse } from "@/clients/github/api";
 import { UAParser } from "ua-parser-js";
 import { OS, CPU } from "ua-parser-js/enums";
 
@@ -59,10 +60,11 @@ const exclusiveExtensions: Record<string, string[]> = {
   [OS.MACOS.toLowerCase()]: [".dmg", ".pkg", ".app"],
   [OS.LINUX.toLowerCase()]: [".deb", ".rpm", ".appimage"],
 };
-
+// TODO introduce proper package type
 class PackageService {
-  async getRankedPackages(user: string, repo: string, userAgent: string) {
-    const latestRelease = await client.getLatestRelease(user, repo);
+  async getRankedPackages(owner: string, repo: string, userAgent: string) {
+       
+    const latestRelease = await GithubApi.getLatestRelease({ owner, repo });
     const parsedUA = UAParser(userAgent);
     const rankedPackages = this.rankPackages(
       latestRelease.assets,
@@ -76,18 +78,18 @@ class PackageService {
         b.package.downloadCount - a.package.downloadCount
       );
     });
-    delete (latestRelease as { assets?: IAsset[] }).assets;
+    delete (latestRelease as { assets?: any[] }).assets;
     return { latestRelease, rankedPackages };
   }
 
-  rankPackages(packages: IAsset[], ua: UAParser.IResult) {
+  rankPackages(packages: any[], ua: UAParser.IResult) {
     return packages.map((pkg) => {
       const matchInfo = this.matchInfo(pkg, ua);
       return { package: pkg, matchInfo };
     });
   }
 
-  matchInfo(p: IAsset, ua: UAParser.IResult) {
+  matchInfo(p: any, ua: UAParser.IResult) {
     let score = 0;
     const matches = {
       exact_match: [] as string[],
