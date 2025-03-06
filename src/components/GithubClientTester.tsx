@@ -1,11 +1,18 @@
+import { PackageService } from "@/services/PackageService";
 import { useState, useEffect } from 'react'
 import { Button } from './Button'
 import { withNuqsAdapter } from './NuqsProvider'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi } from '@/clients/github/api'
 
-type ApiAction = 'latest-release' | 'releases' | 'readme' | 'search-users' | 'search-repos'
-
+type ApiAction = 'latest-release' | 'releases' | 'readme' | 'search-users' | 'search-repos' | 'ranked-release'
+// type ApiAction =
+//   | "latest-release"
+//   | "ranked-release"
+//   | "releases"
+//   | "readme"
+//   | "search-users"
+//   | "search-repos";
 interface GitHubApiTesterProps {
   defaultOwner?: string
   defaultRepo?: string
@@ -44,7 +51,7 @@ const FormField = ({
           </option>
         ))}
       </select>
-    : <input
+      : <input
         type='text'
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -62,7 +69,7 @@ interface ResultDisplayProps {
 }
 
 const ResultDisplay = ({ result, error }: ResultDisplayProps) => {
-  if (error) {
+  if(error) {
     return (
       <div className='bg-red-100 text-red-700 p-4 rounded mb-6'>
         <h2 className='font-bold text-lg mb-2'>Error</h2>
@@ -71,7 +78,7 @@ const ResultDisplay = ({ result, error }: ResultDisplayProps) => {
     )
   }
 
-  if (!result) return null
+  if(!result) return null
 
   return (
     <div className='bg-white p-6 rounded-lg shadow-md'>
@@ -86,6 +93,7 @@ const ResultDisplay = ({ result, error }: ResultDisplayProps) => {
 // Configuration for API actions
 const API_ACTIONS = [
   { value: 'latest-release', label: 'Get Latest Release' },
+  { value: 'ranked-release', label: 'Get Ranked Release' },
   { value: 'releases', label: 'Get All Releases' },
   { value: 'readme', label: 'Get README' },
   { value: 'search-users', label: 'Search Users' },
@@ -94,32 +102,32 @@ const API_ACTIONS = [
 
 // Helper to check if an action needs repository field
 const needsRepo = (action: ApiAction): boolean => {
-  return ['latest-release', 'releases', 'readme'].includes(action)
+  return [ 'latest-release', 'releases', 'readme', 'ranked-release' ].includes(action)
 }
 
 // Helper to check if an action needs search query field
 const needsSearchQuery = (action: ApiAction): boolean => {
-  return ['search-users', 'search-repos'].includes(action)
+  return [ 'search-users', 'search-repos' ].includes(action)
 }
 
 function _GitHubApiTester({
   defaultOwner = 'rustdesk',
   defaultRepo = 'rustdesk',
-  defaultAction = 'latest-release',
+  defaultAction = 'ranked-release',
 }: GitHubApiTesterProps) {
   // Use Nuqs for storing API parameters in the URL
-  const [action, setAction] = useQueryState(
+  const [ action, setAction ] = useQueryState(
     'action',
     parseAsString.withDefault(defaultAction as string),
   )
-  const [owner, setUser] = useQueryState('owner', parseAsString.withDefault(defaultOwner))
-  const [repo, setRepo] = useQueryState('repo', parseAsString.withDefault(defaultRepo))
+  const [ owner, setUser ] = useQueryState('owner', parseAsString.withDefault(defaultOwner))
+  const [ repo, setRepo ] = useQueryState('repo', parseAsString.withDefault(defaultRepo))
 
   // Local state for search query and results
-  const [searchQuery, setSearchQuery] = useState('')
-  const [result, setResult] = useState<Awaited<ReturnType<typeof executeApiCall>> | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [ searchQuery, setSearchQuery ] = useState('')
+  const [ result, setResult ] = useState<Awaited<ReturnType<typeof executeApiCall>> | null>(null)
+  const [ loading, setLoading ] = useState(false)
+  const [ error, setError ] = useState<string | null>(null)
 
   // Make sure action is a valid ApiAction
   const currentAction =
@@ -129,15 +137,15 @@ function _GitHubApiTester({
   useEffect(() => {
     setResult(null)
     setError(null)
-  }, [currentAction])
+  }, [ currentAction ])
 
   // Validate inputs based on action
   const validateInputs = () => {
-    if (needsRepo(currentAction) && (!owner || !repo)) {
+    if(needsRepo(currentAction) && (!owner || !repo)) {
       return 'Both username and repository name are required for this action'
     }
 
-    if (needsSearchQuery(currentAction) && !searchQuery && !owner) {
+    if(needsSearchQuery(currentAction) && !searchQuery && !owner) {
       return 'A search query is required for this action'
     }
 
@@ -146,27 +154,33 @@ function _GitHubApiTester({
 
   // Execute API call based on action
   const executeApiCall = async () => {
-    switch (currentAction) {
-      case 'latest-release':
-        return await GithubApi.getLatestRelease({ owner, repo })
-      case 'releases':
-        return await GithubApi.getReleases({ owner, repo })
-      case 'readme':
-        return await GithubApi.getReadme({ owner, repo })
-      case 'search-users':
-        return await GithubApi.searchUsers({ q: searchQuery || owner })
-      case 'search-repos':
-        return await GithubApi.searchRepositories({
-          q: searchQuery || repo || owner,
-        })
-      default:
-        throw new Error(`Unknown action: ${currentAction}`)
+    switch(currentAction) {
+    case 'latest-release':
+      return await GithubApi.getLatestRelease({ owner, repo })
+    case "ranked-release":
+      return await PackageService.getRankedPackages(
+        owner,
+        repo,
+        navigator.userAgent,
+      );
+    case 'releases':
+      return await GithubApi.getReleases({ owner, repo })
+    case 'readme':
+      return await GithubApi.getReadme({ owner, repo })
+    case 'search-users':
+      return await GithubApi.searchUsers({ q: searchQuery || owner })
+    case 'search-repos':
+      return await GithubApi.searchRepositories({
+        q: searchQuery || repo || owner,
+      })
+    default:
+      throw new Error(`Unknown action: ${currentAction}`)
     }
   }
 
   const fetchData = async () => {
     const validationError = validateInputs()
-    if (validationError) {
+    if(validationError) {
       setError(validationError)
       return
     }
@@ -177,7 +191,7 @@ function _GitHubApiTester({
       setResult(null) // Clear previous results to avoid type conflicts
       const data = await executeApiCall()
       setResult(data)
-    } catch (err) {
+    } catch(err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred')
     } finally {
       setLoading(false)
@@ -187,13 +201,13 @@ function _GitHubApiTester({
   // Get placeholder text for search query based on action
   const getSearchQueryPlaceholder = () => {
     return currentAction === 'search-users' ?
-        'Enter username to search for...'
+      'Enter username to search for...'
       : 'Enter repository name to search for...'
   }
 
   // Handle action change, ensuring type safety
   const handleActionChange = (newAction: string) => {
-    if (API_ACTIONS.some((a) => a.value === newAction)) {
+    if(API_ACTIONS.some((a) => a.value === newAction)) {
       setAction(newAction)
     }
   }
