@@ -16,7 +16,7 @@ function _UserRepositories() {
 
       try {
         setLoading(true)
-        const response = await GithubApi.searchRepositories({ q: owner })
+        const response = await GithubApi.searchRepositories({ q: `+user:${owner}` })
         setRepositories(response.items)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch repositories')
