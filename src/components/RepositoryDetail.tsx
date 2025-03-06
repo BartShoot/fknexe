@@ -55,7 +55,7 @@ function _RepositoryDetail() {
   }
 
   if (error) {
-    return <div className='text-red-500 p-4'>{error}</div>
+    return <div className='text-center text-red-500 p-4'>{error}</div>
   }
 
   return (
@@ -101,7 +101,6 @@ function _RepositoryDetail() {
         )}
       </div>
 
-      {/* README Section */}
       <div className='border border-gray-200 rounded-lg p-6'>
         <h2 className='text-xl font-semibold mb-4'>README</h2>
         {readme ?

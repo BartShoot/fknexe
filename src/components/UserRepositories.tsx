@@ -33,7 +33,7 @@ function _UserRepositories() {
   }
 
   if (error) {
-    return <div className='text-red-500 p-4'>{error}</div>
+    return <div className='text-center text-red-500 p-4'>{error}</div>
   }
 
   if (repositories.length === 0) {

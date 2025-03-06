@@ -1,5 +1,6 @@
 import { base64decode } from '@/lib/utils/base64/decode'
 import { Octokit } from '@octokit/rest'
+import { RequestError } from '@octokit/request-error'
 import type { OctokitResponse } from '@octokit/types/dist-types/OctokitResponse'
 
 type Instance = InstanceType<typeof Octokit>
@@ -26,10 +27,7 @@ const methodMap = {
 } as const satisfies Record<keyof ApiMethods, { namespace: keyof Rest; method: string }>
 
 export class GithubApi {
-  static #instance = new Octokit({
-    // Default configuration here
-  })
-
+  static #instance: Octokit
   static init(options?: ConstructorParameters<typeof Octokit>[0]) {
     this.#instance = new Octokit(options)
   }
@@ -45,16 +43,18 @@ export class GithubApi {
         await this.#instance.rest[namespace][method](...params)
 
       if (!result.status.toString().startsWith('2')) {
-        throw new Error(`GitHub API ${namespace}.${method} returned status ${result.status}`)
+        throw new Error(`GitHub API returned status ${result.status}`)
       }
 
       if (!result.data) {
-        throw new Error(`No data returned from ${namespace}.${method}`)
+        throw new Error(`No data found`)
       }
 
       return result.data
     } catch (error) {
-      console.error(`Error calling GitHub API ${methodName}:`, error)
+      if (error instanceof RequestError) {
+        error.message = `${error.message.replace(/[\W]*https:\/\/.*$/, '')}`
+      }
       throw error
     }
   }
@@ -79,4 +79,13 @@ export class GithubApi {
     })
 }
 
-GithubApi.init()
+GithubApi.init({
+  ...(import.meta.env.DEV && {
+    log: {
+      debug: console.debug,
+      info: console.info,
+      warn: console.warn,
+      error: console.error,
+    },
+  }),
+})
