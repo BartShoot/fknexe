@@ -1,13 +1,11 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import { SearchForm } from "@/components/SearchForm";
+import Layout from '@/layouts/Layout.astro'
+import { SearchForm } from '@/components/SearchForm'
 ---
 
 <Layout>
-  <main class="container mx-auto py-12 px-4">
+  <main class='container mx-auto py-12 px-4'>
     <SearchForm client:load />
-    <footer class="text-center text-gray-500 text-sm mt-20">
-      brought to you by smelly nerds
-    </footer>
+    <footer class='text-center text-gray-500 text-sm mt-20'>brought to you by smelly nerds</footer>
   </main>
 </Layout>
