@@ -32,6 +32,7 @@
     "@astrojs/check": "0.9.4",
     "@eslint/js": "9.21.0",
     "@microsoft/eslint-formatter-sarif": "3.1.0",
+    "@size-limit/preset-app": "11.2.0",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@typescript-eslint/parser": "8.25.0",
@@ -45,11 +46,18 @@
     "lint-staged": "15.4.3",
     "prettier": "3.5.2",
     "prettier-plugin-astro": "0.14.1",
+    "size-limit": "11.2.0",
     "typescript-eslint": "8.25.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.34.9",
     "@tailwindcss/oxide-linux-x64-gnu": "4.0.9",
     "lightningcss-linux-x64-gnu": "1.29.1"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/**/*.js",
+      "limit": "10000 kB"
+    }
+  ]
 }
