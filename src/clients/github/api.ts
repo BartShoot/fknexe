@@ -65,9 +65,11 @@ export class GithubApi {
   static searchRepositories = (...params: Parameters<ApiMethods['searchRepositories']>) =>
     this.#call('searchRepositories', ...params)
 
-  static getReleases = (...params: Parameters<ApiMethods['getReleases']>) => this.#call('getReleases', ...params)
+  static getReleases = (...params: Parameters<ApiMethods['getReleases']>) =>
+    this.#call('getReleases', ...params)
 
-  static searchUsers = (...params: Parameters<ApiMethods['searchUsers']>) => this.#call('searchUsers', ...params)
+  static searchUsers = (...params: Parameters<ApiMethods['searchUsers']>) =>
+    this.#call('searchUsers', ...params)
 
   static getReadme = (...params: Parameters<ApiMethods['getReadme']>) =>
     this.#call('getReadme', ...params).then((data) => {

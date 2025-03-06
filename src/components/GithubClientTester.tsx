@@ -7,7 +7,7 @@ import { GithubApi } from '@/clients/github/api'
 type ApiAction = 'latest-release' | 'releases' | 'readme' | 'search-users' | 'search-repos'
 
 interface GitHubApiTesterProps {
-  defaultUser?: string
+  defaultOwner?: string
   defaultRepo?: string
   defaultAction?: ApiAction
 }
@@ -22,7 +22,14 @@ interface FormFieldProps {
   options?: Array<{ value: string; label: string }>
 }
 
-const FormField = ({ label, value, onChange, placeholder, type = 'text', options = [] }: FormFieldProps) => (
+const FormField = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+  options = [],
+}: FormFieldProps) => (
   <div>
     <label className='block text-gray-700 mb-2'>{label}</label>
     {type === 'select' ?
@@ -69,7 +76,9 @@ const ResultDisplay = ({ result, error }: ResultDisplayProps) => {
   return (
     <div className='bg-white p-6 rounded-lg shadow-md'>
       <h2 className='font-bold text-lg mb-4'>API Result</h2>
-      <pre className='bg-gray-50 p-4 rounded overflow-x-auto'>{JSON.stringify(result, null, 2)}</pre>
+      <pre className='bg-gray-50 p-4 rounded overflow-x-auto'>
+        {JSON.stringify(result, null, 2)}
+      </pre>
     </div>
   )
 }
@@ -94,13 +103,16 @@ const needsSearchQuery = (action: ApiAction): boolean => {
 }
 
 function _GitHubApiTester({
-  defaultUser = 'rustdesk',
+  defaultOwner = 'rustdesk',
   defaultRepo = 'rustdesk',
   defaultAction = 'latest-release',
 }: GitHubApiTesterProps) {
   // Use Nuqs for storing API parameters in the URL
-  const [action, setAction] = useQueryState('action', parseAsString.withDefault(defaultAction as string))
-  const [owner, setUser] = useQueryState('user', parseAsString.withDefault(defaultUser))
+  const [action, setAction] = useQueryState(
+    'action',
+    parseAsString.withDefault(defaultAction as string),
+  )
+  const [owner, setUser] = useQueryState('owner', parseAsString.withDefault(defaultOwner))
   const [repo, setRepo] = useQueryState('repo', parseAsString.withDefault(defaultRepo))
 
   // Local state for search query and results
@@ -110,7 +122,8 @@ function _GitHubApiTester({
   const [error, setError] = useState<string | null>(null)
 
   // Make sure action is a valid ApiAction
-  const currentAction = API_ACTIONS.some((a) => a.value === action) ? (action as ApiAction) : defaultAction
+  const currentAction =
+    API_ACTIONS.some((a) => a.value === action) ? (action as ApiAction) : defaultAction
 
   // Clear result when changing action type to prevent type mismatches
   useEffect(() => {
@@ -201,11 +214,21 @@ function _GitHubApiTester({
           />
 
           {/* User/Organization field - always visible */}
-          <FormField label='User/Organization' value={owner ?? ''} onChange={setUser} placeholder='e.g., rustdesk' />
+          <FormField
+            label='User/Organization'
+            value={owner ?? ''}
+            onChange={setUser}
+            placeholder='e.g., rustdesk'
+          />
 
           {/* Repository field - conditional */}
           {needsRepo(currentAction) && (
-            <FormField label='Repository' value={repo ?? ''} onChange={setRepo} placeholder='e.g., rustdesk' />
+            <FormField
+              label='Repository'
+              value={repo ?? ''}
+              onChange={setRepo}
+              placeholder='e.g., rustdesk'
+            />
           )}
 
           {/* Search query field - conditional */}

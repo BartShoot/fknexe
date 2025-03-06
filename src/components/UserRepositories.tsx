@@ -6,7 +6,9 @@ import { withNuqsAdapter } from './NuqsProvider'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)
-  const [repositories, setRepositories] = useState<GithubResponse['searchRepositories']['items']>([])
+  const [repositories, setRepositories] = useState<GithubResponse['searchRepositories']['items']>(
+    [],
+  )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -45,7 +47,10 @@ function _UserRepositories() {
       <h2 className='text-xl font-bold mb-6'>{owner}'s Repositories</h2>
       <div className='grid gap-4'>
         {repositories.map((repo) => (
-          <div key={repo.id} className='border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors'>
+          <div
+            key={repo.id}
+            className='border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors'
+          >
             <h3 className='text-lg font-medium'>{repo.name}</h3>
             {repo.description && <p className='text-gray-600 my-2'>{repo.description}</p>}
             <div className='flex items-center gap-4 mt-3'>

@@ -92,7 +92,9 @@ function _RepositoryDetail() {
 
         {release && downloadAsset && (
           <div className='text-center'>
-            <p className='text-gray-700 mb-4'>We found a compatible binary for your {detectedOS} system:</p>
+            <p className='text-gray-700 mb-4'>
+              We found a compatible binary for your {detectedOS} system:
+            </p>
             <p className='font-medium mb-2'>{downloadAsset.name}</p>
             <a href={downloadAsset.url} download>
               <Button className='text-lg py-3 px-8 mt-2'>DOWNLOAD</Button>

@@ -21,11 +21,13 @@ type IElement = HTMLButtonElement
 
 export interface IProps extends ButtonHTMLAttributes<IElement>, VariantProps<typeof variants> {}
 
-const Button = forwardRef<IElement, IProps>(({ className, children, variant, size, ...props }, ref) => (
-  <button {...props} ref={ref} className={cx(variants({ variant, size, className }))}>
-    {children}
-  </button>
-))
+const Button = forwardRef<IElement, IProps>(
+  ({ className, children, variant, size, ...props }, ref) => (
+    <button {...props} ref={ref} className={cx(variants({ variant, size, className }))}>
+      {children}
+    </button>
+  ),
+)
 
 Button.displayName = 'Button'
 

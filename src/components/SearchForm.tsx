@@ -13,7 +13,10 @@ function _SearchForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col items-center gap-4 w-full max-w-md mx-auto p-6'>
+    <form
+      onSubmit={handleSubmit}
+      className='flex flex-col items-center gap-4 w-full max-w-md mx-auto p-6'
+    >
       <h1 className='text-2xl font-bold mb-4'>GitHub Binary Downloader</h1>
       <p className='text-center mb-6'>
         Find and download executable files from GitHub repositories without the complexity.
