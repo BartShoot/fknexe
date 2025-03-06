@@ -12,6 +12,7 @@
     "check:typescript": "astro check",
     "check:eslint": "eslint",
     "check:all": "concurrently --kill-others-on-fail \"npm run check:build\" \"npm run check:prettier\" \"npm run check:typescript\" \"npm run check:eslint\"",
+    "size": "npm run build && size-limit",
     "prepare": "husky"
   },
   "dependencies": {
