@@ -78,8 +78,10 @@ class PackageService {
     return { latestRelease, rankedPackages }
   }
 
+  // TODO: proper types
   rankPackages(packages: any[], ua: UAParser.IResult) {
     return packages.map((pkg) => {
+      // TODO: take package name from name or common parts
       const matchInfo = this.matchInfo(pkg, ua)
       return { package: pkg, matchInfo }
     })
@@ -110,6 +112,7 @@ class PackageService {
     }
 
     if (matchesOtherOs) {
+      // TODO: darwin vs win
       score--
       matches.conflicts.push('OS')
     } else {
@@ -143,7 +146,7 @@ class PackageService {
     }
 
     if (matchesOtherArch) {
-      // TODO x86 vs x86_64
+      // TODO: x86 vs x86_64
       score--
       matches.conflicts.push('Architecture')
     } else {
