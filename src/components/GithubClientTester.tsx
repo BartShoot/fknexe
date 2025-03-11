@@ -12,13 +12,7 @@ type ApiAction =
   | 'search-users'
   | 'search-repos'
   | 'ranked-release'
-// type ApiAction =
-//   | "latest-release"
-//   | "ranked-release"
-//   | "releases"
-//   | "readme"
-//   | "search-users"
-//   | "search-repos";
+
 interface GitHubApiTesterProps {
   defaultOwner?: string
   defaultRepo?: string
