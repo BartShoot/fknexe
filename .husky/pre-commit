@@ -6,5 +6,5 @@ if [ -d "$REBASE_PATH" ] || [ -f "$MERGE_PATH" ]; then
   echo "Skipping Husky pre-commit hook: We are in the middle of a rebase or merge."
 else
   echo "Running Husky pre-commit hook: Formatting affected files"
-  # npx lint-staged
+  npx lint-staged
 fi
