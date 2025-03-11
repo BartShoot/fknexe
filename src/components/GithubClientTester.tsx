@@ -1,10 +1,17 @@
+import { PackageService } from '@/services/PackageService'
 import { useState, useEffect } from 'react'
 import { Button } from './Button'
 import { withNuqsAdapter } from './NuqsProvider'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi } from '@/clients/github/api'
 
-type ApiAction = 'latest-release' | 'releases' | 'readme' | 'search-users' | 'search-repos'
+type ApiAction =
+  | 'latest-release'
+  | 'releases'
+  | 'readme'
+  | 'search-users'
+  | 'search-repos'
+  | 'ranked-release'
 
 interface GitHubApiTesterProps {
   defaultOwner?: string
@@ -86,6 +93,7 @@ const ResultDisplay = ({ result, error }: ResultDisplayProps) => {
 // Configuration for API actions
 const API_ACTIONS = [
   { value: 'latest-release', label: 'Get Latest Release' },
+  { value: 'ranked-release', label: 'Get Ranked Release' },
   { value: 'releases', label: 'Get All Releases' },
   { value: 'readme', label: 'Get README' },
   { value: 'search-users', label: 'Search Users' },
@@ -94,7 +102,7 @@ const API_ACTIONS = [
 
 // Helper to check if an action needs repository field
 const needsRepo = (action: ApiAction): boolean => {
-  return ['latest-release', 'releases', 'readme'].includes(action)
+  return ['latest-release', 'releases', 'readme', 'ranked-release'].includes(action)
 }
 
 // Helper to check if an action needs search query field
@@ -105,7 +113,7 @@ const needsSearchQuery = (action: ApiAction): boolean => {
 function _GitHubApiTester({
   defaultOwner = 'rustdesk',
   defaultRepo = 'rustdesk',
-  defaultAction = 'latest-release',
+  defaultAction = 'ranked-release',
 }: GitHubApiTesterProps) {
   // Use Nuqs for storing API parameters in the URL
   const [action, setAction] = useQueryState(
@@ -149,6 +157,8 @@ function _GitHubApiTester({
     switch (currentAction) {
       case 'latest-release':
         return await GithubApi.getLatestRelease({ owner, repo })
+      case 'ranked-release':
+        return await PackageService.getRankedPackages(owner, repo, navigator.userAgent)
       case 'releases':
         return await GithubApi.getReleases({ owner, repo })
       case 'readme':
