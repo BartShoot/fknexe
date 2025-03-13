@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Button } from './button'
 import { useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
 
 function ButtonLink({
   children,

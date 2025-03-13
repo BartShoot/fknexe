@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
-import { detectOS, getAppropriateAsset, type SupportedOS } from '@/lib/utils/detectOS'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { DownloadButton } from './ui/download-button'
+import { DownloadButton } from '@/components/ui/download-button'
+import { type SupportedOS, detectOS, getAppropriateAsset } from '@/lib/utils/detectOS'
 
 function _RepositoryDetail() {
   const [owner] = useQueryState('u', parseAsString)

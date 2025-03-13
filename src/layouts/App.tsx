@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@/components/theme-provider'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 
-type AppProps = {
+interface AppProps {
   children: React.ReactNode
 }
 

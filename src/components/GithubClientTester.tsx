@@ -1,9 +1,9 @@
-import { PackageService } from '@/services/PackageService'
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi } from '@/clients/github/api'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { Button } from '@/components/ui/button'
+import { PackageService } from '@/services/PackageService'
 
 type ApiAction =
   | 'latest-release'
@@ -26,7 +26,7 @@ interface FormFieldProps {
   onChange: (value: string) => void
   placeholder?: string
   type?: 'text' | 'select'
-  options?: Array<{ value: string; label: string }>
+  options?: { value: string; label: string }[]
 }
 
 const FormField = ({

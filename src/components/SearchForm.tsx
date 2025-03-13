@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { Button } from '@/components/ui/button'
 
 function _SearchForm() {
   const [searchTerm, setSearchTerm] = useState('')

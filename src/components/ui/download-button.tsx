@@ -1,5 +1,5 @@
-import { ButtonLink } from './button-link'
-import GradientText from './gradient-text'
+import { ButtonLink } from '@/components/ui/button-link'
+import GradientText from '@/components/ui/gradient-text'
 
 export const DownloadButton = ({
   ...props

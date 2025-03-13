@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useQueryState, parseAsString } from 'nuqs'
+import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
-import { Button } from '@/components/ui/button'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { Button } from '@/components/ui/button'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)
@@ -56,7 +56,7 @@ function _UserRepositories() {
             <div className='flex items-center gap-4 mt-3'>
               <span className='text-sm text-gray-500'>⭐ {repo.stargazers_count}</span>
               <a
-                href={`/user/repository?u=${encodeURIComponent(owner || '')}&r=${encodeURIComponent(repo.name)}`}
+                href={`/user/repository?u=${encodeURIComponent(owner ?? '')}&r=${encodeURIComponent(repo.name)}`}
                 className='block'
               >
                 <Button>View Details</Button>
