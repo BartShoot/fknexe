@@ -1,7 +1,7 @@
 import { PackageService } from '@/services/PackageService'
 import { useState, useEffect } from 'react'
-import { Button } from './Button'
-import { withNuqsAdapter } from './NuqsProvider'
+import { Button } from '@/components/ui/button'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi } from '@/clients/github/api'
 

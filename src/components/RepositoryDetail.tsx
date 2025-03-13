@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
-import { GithubApi, type GithubResponse } from '../clients/github/api'
-import { Button } from './Button'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { detectOS, getAppropriateAsset, type SupportedOS } from '@/lib/utils/detectOS'
-import { withNuqsAdapter } from './NuqsProvider'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { DownloadButton } from './ui/download-button'
 
 function _RepositoryDetail() {
   const [owner] = useQueryState('u', parseAsString)
@@ -96,9 +96,7 @@ function _RepositoryDetail() {
               We found a compatible binary for your {detectedOS} system:
             </p>
             <p className='font-medium mb-2'>{downloadAsset.name}</p>
-            <a href={downloadAsset.url} download>
-              <Button className='text-lg py-3 px-8 mt-2'>DOWNLOAD</Button>
-            </a>
+            <DownloadButton href={downloadAsset.url} />
           </div>
         )}
       </div>

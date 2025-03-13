@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Button } from './Button'
-import { withNuqsAdapter } from './NuqsProvider'
+import { Button } from '@/components/ui/button'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
 
 function _SearchForm() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -21,16 +21,16 @@ function _SearchForm() {
       <p className='text-center mb-6'>
         Find and download executable files from GitHub repositories without the complexity.
       </p>
-      <div className='flex w-full'>
+      <div className='flex size-full'>
         <input
           type='text'
           placeholder='Enter GitHub username...'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className='flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+          className='flex-grow py-1 px-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           aria-label='GitHub username'
         />
-        <Button type='submit' className='rounded-l-none px-6 py-2'>
+        <Button type='submit' className='rounded-l-none'>
           Search
         </Button>
       </div>

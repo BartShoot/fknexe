@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useQueryState, parseAsString } from 'nuqs'
-import { GithubApi, type GithubResponse } from '../clients/github/api'
-import { Button } from './Button'
-import { withNuqsAdapter } from './NuqsProvider'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
+import { Button } from '@/components/ui/button'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)

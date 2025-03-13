@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import { App } from '@/layouts/App'
 ---
 
 <!doctype html>
@@ -15,7 +16,9 @@ import '../styles/global.css'
       content='A simple way to download binaries from GitHub repositories without technical knowledge.'
     />
   </head>
-  <body class='min-h-screen bg-gray-50'>
-    <slot />
+  <body>
+    <App client:only='react'>
+      <slot />
+    </App>
   </body>
 </html>
