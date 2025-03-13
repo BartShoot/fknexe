@@ -1,6 +1,8 @@
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
+import type { IAsset } from '@/lib/types'
 import { UAParser } from 'ua-parser-js'
 import { OS, CPU } from 'ua-parser-js/enums'
+
 const osSynonyms: Record<string, string[]> = {
   [OS.WINDOWS.toLowerCase()]: [
     'windows',
@@ -65,21 +67,24 @@ class PackageService {
       repo,
     })
     const parsedUA = UAParser(userAgent)
-    const rankedPackages = this.rankPackages(latestRelease.assets, parsedUA).sort((a, b) => {
+    const rankedPackages = this.getSortedRankedPackages(latestRelease.assets, parsedUA)
+    delete (latestRelease as { assets?: IAsset[] }).assets
+    return { latestRelease, rankedPackages }
+  }
+
+  getSortedRankedPackages(packages: IAsset[], ua: UAParser.IResult) {
+    return this.rankPackages(packages, ua).sort((a, b) => {
       const bHasOS = b.matchInfo.matches.exact_match.includes('OS')
       const aHasOS = a.matchInfo.matches.exact_match.includes('OS')
       return (
         b.matchInfo.score - a.matchInfo.score ||
         ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
-        b.package.downloadCount - a.package.downloadCount
+        b.package.download_count - a.package.download_count
       )
     })
-    delete (latestRelease as { assets?: any[] }).assets
-    return { latestRelease, rankedPackages }
   }
 
-  // TODO: proper types
-  rankPackages(packages: any[], ua: UAParser.IResult) {
+  rankPackages(packages: IAsset[], ua: UAParser.IResult) {
     return packages.map((pkg) => {
       // TODO: take package name from name or common parts
       const matchInfo = this.matchInfo(pkg, ua)
@@ -87,7 +92,7 @@ class PackageService {
     })
   }
 
-  matchInfo(p: any, ua: UAParser.IResult) {
+  matchInfo(p: IAsset, ua: UAParser.IResult) {
     let score = 0
     const matches = {
       exact_match: [] as string[],
