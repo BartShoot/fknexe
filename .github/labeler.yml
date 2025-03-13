@@ -13,7 +13,6 @@ config:
     - 'eslint.config.js'
     - 'lint-staged.config.mjs'
     - 'postcss.config.mjs'
-    - 'cva.config.ts'
 
 # GitHub workflows and CI
 ci:

@@ -1,6 +1,7 @@
-import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { UAParser } from 'ua-parser-js'
-import { OS, CPU } from 'ua-parser-js/enums'
+import { CPU, OS } from 'ua-parser-js/enums'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
+
 const osSynonyms: Record<string, string[]> = {
   [OS.WINDOWS.toLowerCase()]: [
     'windows',
@@ -95,7 +96,7 @@ class PackageService {
       conflicts: [] as string[],
     }
     const packageName = p.name.toLowerCase()
-    const osName = ua.os.name?.toLowerCase() || ''
+    const osName = ua.os.name?.toLowerCase() ?? ''
     const currentOsSynonyms = osSynonyms[osName]
 
     let matchesOtherOs = false
@@ -131,7 +132,7 @@ class PackageService {
       }
     }
 
-    const archName = ua.cpu.architecture?.toLowerCase() || ''
+    const archName = ua.cpu.architecture?.toLowerCase() ?? ''
     let matchesOtherArch = false
     for (const [otherArchs, synonyms] of Object.entries(archSynonyms)) {
       if (otherArchs !== archName) {

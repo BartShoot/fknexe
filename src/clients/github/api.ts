@@ -1,12 +1,12 @@
-import { base64decode } from '@/lib/utils/base64/decode'
-import { Octokit } from '@octokit/rest'
 import { RequestError } from '@octokit/request-error'
+import { Octokit } from '@octokit/rest'
 import type { OctokitResponse } from '@octokit/types/dist-types/OctokitResponse'
+import { base64decode } from '@/lib/utils/base64/decode'
 
 type Instance = InstanceType<typeof Octokit>
 type Rest = Instance['rest']
 
-type ApiMethods = {
+interface ApiMethods {
   getLatestRelease: Rest['repos']['getLatestRelease']
   getReleases: Rest['repos']['listReleases']
   getReadme: Rest['repos']['getReadme']
