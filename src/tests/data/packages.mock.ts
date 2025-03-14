@@ -1,9 +1,30 @@
-import { expect, test } from 'vitest'
-import { PackageService } from './PackageService.ts'
-import { UAParser } from 'ua-parser-js'
 import type { IAsset } from '@/lib/types.ts'
 
-const assets: IAsset[] = [
+export const testCases = [
+  {
+    name: 'Windows Firefox',
+    ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0',
+    expectedMatches: {
+      'fzf-0.60.3-windows_amd64.zip': ['OS', 'Architecture', 'Extension'],
+      'fzf-0.60.3-darwin_amd64.tar.gz': ['Architecture'],
+      'fzf-0.60.3-windows_armv6.zip': ['OS', 'Extension'],
+      'fzf-0.60.3-windows_armv5.zip': ['OS', 'Extension'],
+      'fzf-0.60.3-windows_armv7.zip': ['OS', 'Extension'],
+      'fzf-0.60.3-windows_arm64.zip': ['OS', 'Extension'],
+      'fzf-0.60.3-darwin_arm64.tar.gz': [],
+    },
+  },
+  {
+    name: 'Mac Safari',
+    ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
+  },
+  {
+    name: 'Linux',
+    ua: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/37.0.2062.94 Chrome/37.0.2062.94 Safari/537.36',
+  },
+]
+
+export const assets: IAsset[] = [
   {
     url: 'https://api.github.com/repos/junegunn/fzf/releases/assets/234110380',
     id: 234110380,
@@ -653,11 +674,3 @@ const assets: IAsset[] = [
       'https://github.com/junegunn/fzf/releases/download/v0.60.3/fzf_0.60.3_checksums.txt',
   },
 ]
-test(`test`, () => {
-  const ranked = PackageService.getSortedRankedPackages(
-    assets,
-    UAParser('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0'),
-  )
-  console.log(ranked.map((r) => r.package.name + ' score: ' + r.matchInfo.score))
-  expect(ranked.at(0)!.matchInfo.score.valueOf() > 1)
-})

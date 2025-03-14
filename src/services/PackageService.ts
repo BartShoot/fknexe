@@ -55,7 +55,7 @@ const archSynonyms: Record<string, string[]> = {
 }
 
 const exclusiveExtensions: Record<string, string[]> = {
-  [OS.WINDOWS.toLowerCase()]: ['.exe', '.msi', '.bat', '.cmd'],
+  [OS.WINDOWS.toLowerCase()]: ['.exe', '.msi', '.bat', '.cmd', '.zip'],
   [OS.MACOS.toLowerCase()]: ['.dmg', '.pkg', '.app'],
   [OS.LINUX.toLowerCase()]: ['.deb', '.rpm', '.appimage'],
 }
@@ -126,6 +126,7 @@ class PackageService {
           if (packageName.includes(synonym)) {
             score++
             matches.exact_match.push('OS')
+            break
           }
         }
       } else {
@@ -161,6 +162,7 @@ class PackageService {
           if (packageName.includes(synonym)) {
             score++
             matches.exact_match.push('Architecture')
+            break
           }
         }
       } else {
@@ -194,6 +196,7 @@ class PackageService {
           if (packageName.includes(extension)) {
             score++
             matches.exact_match.push('Extension')
+            break
           }
         }
       }
