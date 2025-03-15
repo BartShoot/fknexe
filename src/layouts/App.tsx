@@ -8,15 +8,17 @@ interface AppProps {
 export const App = ({ children }: AppProps) => {
   return (
     <ThemeProvider defaultTheme='dark' storageKey='ui-theme'>
-      <main className='container mx-auto py-12 px-4'>
-        <div className='fixed top-4 right-4'>
-          <ModeToggle />
-        </div>
-        {children}
-        <footer className='text-center text-gray-500 text-sm mt-20'>
+      <div className='flex flex-col min-h-full'>
+        <main className='w-full flex-1'>
+          <div className='fixed top-2 right-2'>
+            <ModeToggle />
+          </div>
+          {children}
+        </main>
+        <footer className='text-center text-gray-500 text-sm py-4'>
           brought to you by smelly nerds
         </footer>
-      </main>
+      </div>
     </ThemeProvider>
   )
 }
