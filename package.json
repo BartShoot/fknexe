@@ -13,7 +13,8 @@
     "check:eslint": "eslint",
     "check:all": "concurrently --kill-others-on-fail \"npm run check:build\" \"npm run check:prettier\" \"npm run check:typescript\" \"npm run check:eslint\"",
     "size": "npm run build && size-limit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest"
   },
   "dependencies": {
     "@astrojs/react": "4.2.1",
@@ -28,7 +29,8 @@
     "tailwind-merge": "3.0.2",
     "tailwindcss": "4.0.11",
     "typescript": "5.8.2",
-    "ua-parser-js": "2.0.2"
+    "ua-parser-js": "2.0.2",
+    "vitest": "3.0.8"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.4",
