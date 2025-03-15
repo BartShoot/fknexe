@@ -3,6 +3,8 @@ import type { IAsset } from '@/lib/types'
 import { UAParser } from 'ua-parser-js'
 import { OS, CPU } from 'ua-parser-js/enums'
 
+type OSType = (typeof OS)[keyof typeof OS]
+
 const osSynonyms: Record<string, string[]> = {
   [OS.WINDOWS.toLowerCase()]: [
     'windows',
@@ -92,6 +94,118 @@ class PackageService {
     })
   }
 
+  toOSType(value: string): OSType | undefined {
+    return (Object.values(OS) as string[]).includes(value) ? (value as OSType) : undefined
+  }
+
+  getCurrentOS(os: UAParser.IOS) {
+    if (!os.name) return ''
+    const osType = this.toOSType(os.name)
+    switch (osType) {
+      case OS.WINDOWS:
+        return OS.WINDOWS.toString()
+      case OS.MACOS:
+        return OS.MACOS.toString()
+      case OS.FREEBSD:
+      case OS.GHOSTBSD:
+        return OS.FREEBSD.toString()
+      case OS.OPENBSD:
+      case OS.NETBSD:
+        return OS.OPENBSD.toString()
+      case OS.LINUX:
+      case OS.UBUNTU:
+      case OS.GNU:
+      case OS.GENTOO:
+      case OS.AIX:
+      case OS.ARCH:
+      case OS.DEBIAN:
+      case OS.ELEMENTARY_OS:
+      case OS.FEDORA:
+      case OS.SUSE:
+      case OS.CENTOS:
+      case OS.DRAGONFLY:
+      case OS.FIREFOX_OS:
+      case OS.HP_UX:
+      case OS.HURD:
+      case OS.KUBUNTU:
+      case OS.LINPUS:
+      case OS.LINSPIRE:
+      case OS.MAGEIA:
+      case OS.MANDRIVA:
+      case OS.MANJARO:
+      case OS.MEEGO:
+      case OS.MINIX:
+      case OS.MINT:
+      case OS.PCLINUXOS:
+      case OS.RASPBIAN:
+      case OS.REDHAT:
+      case OS.SABAYON:
+      case OS.SERENITYOS:
+      case OS.SLACKWARE:
+      case OS.SOLARIS:
+      case OS.UNIX:
+      case OS.VECTORLINUX:
+      case OS.ZENWALK:
+        return OS.LINUX.toString()
+      //misc
+      case OS.NINTENDO:
+      case OS.NETRANGE:
+      case OS.NETTV:
+      case OS.OPENHARMONY:
+      case OS.OPENVMS:
+      case OS.PLAYSTATION:
+      case OS.WEBOS:
+      case OS.WINDOWS_IOT:
+      case OS.XBOX:
+        return ''
+      //mobile
+      case OS.WINDOWS_MOBILE:
+      case OS.ANDROID:
+      case OS.ANDROID_X86:
+      case OS.BADA:
+      case OS.BLACKBERRY:
+      case OS.CHROME_OS:
+      case OS.CHROMECAST:
+      case OS.CHROMECAST_ANDROID:
+      case OS.CHROMECAST_FUCHSIA:
+      case OS.CHROMECAST_LINUX:
+      case OS.CHROMECAST_SMARTSPEAKER:
+      case OS.CONTIKI:
+      case OS.DEEPIN:
+      case OS.FUCHSIA:
+      case OS.HAIKU:
+      case OS.HARMONYOS:
+      case OS.IOS:
+      case OS.PALM:
+      case OS.PICO:
+      case OS.RIM_TABLET_OS:
+      case OS.SAILFISH:
+      case OS.SYMBIAN:
+      case OS.TIZEN:
+      case OS.UBUNTU_TOUCH:
+      case OS.WATCHOS:
+      case OS.WINDOWS_PHONE:
+        return ''
+      //legacy
+      case OS.BEOS:
+      case OS.AMIGA_OS:
+      case OS.JOLI:
+      case OS.KAIOS:
+      case OS.MAEMO:
+      case OS.MORPH_OS:
+      case OS.QNX:
+      case OS.OS2:
+      case OS.PC_BSD:
+      case OS.PLAN9:
+      case OS.RISC_OS:
+      case OS.SERIES40:
+      case undefined:
+        return ''
+      default:
+        return osType satisfies never
+    }
+  }
+
   matchInfo(p: IAsset, ua: UAParser.IResult) {
     let score = 0
     const matches = {
@@ -100,7 +214,7 @@ class PackageService {
       conflicts: [] as string[],
     }
     const packageName = p.name.toLowerCase()
-    const osName = ua.os.name?.toLowerCase() || ''
+    const osName = this.getCurrentOS(ua.os).toLowerCase()
     const currentOsSynonyms = osSynonyms[osName]
 
     let matchesOtherOs = false

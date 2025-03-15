@@ -17,10 +17,24 @@ export const testCases = [
   {
     name: 'Mac Safari',
     ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
+    expectedMatches: {
+      'fzf-0.60.3-darwin_arm64.tar.gz': ['OS'],
+      'fzf-0.60.3-darwin_amd64.tar.gz': ['OS'],
+    },
   },
   {
     name: 'Linux',
     ua: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/37.0.2062.94 Chrome/37.0.2062.94 Safari/537.36',
+    expectedMatches: {
+      'fzf-0.60.3-linux_amd64.tar.gz': ['OS', 'Architecture'],
+      'fzf-0.60.3-linux_s390x.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_ppc64le.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_loong64.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_armv6.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_armv5.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_armv7.tar.gz': ['OS'],
+      'fzf-0.60.3-linux_arm64.tar.gz': ['OS'],
+    },
   },
 ]
 
