@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
+@plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -114,6 +115,7 @@
     @apply border-border outline-ring/50;
   }
   body {
+    font-family: 'Inter Variable', sans-serif;
     @apply bg-background text-foreground;
   }
 }
