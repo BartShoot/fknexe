@@ -120,6 +120,12 @@
   }
 }
 
+@layer components {
+  .typography {
+    @apply prose prose-zinc dark:prose-invert;
+  }
+}
+
 @theme {
   --animate-gradient: gradient 8s linear infinite;
   @keyframes gradient {

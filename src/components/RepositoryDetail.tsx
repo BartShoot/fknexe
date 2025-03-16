@@ -25,11 +25,9 @@ function _RepositoryDetail() {
 
       try {
         setLoading(true)
-
-        // Fetch readme and release data in parallel
         const [readmeData, releaseData] = await Promise.all([
           GithubApi.getReadme({ owner, repo }),
-          GithubApi.getLatestRelease({ owner: owner, repo: repo }).catch(() => null),
+          GithubApi.getLatestRelease({ owner, repo }).catch(() => null),
         ])
 
         setReadme(readmeData)
@@ -54,19 +52,18 @@ function _RepositoryDetail() {
 
   return (
     <div className='w-full max-w-4xl mx-auto'>
-      <h1 className='text-2xl font-bold mb-2'>{repo}</h1>
-      <p className='text-gray-500 mb-8'>by {owner}</p>
+      <h1 className='text-2xl font-bold'>{repo}</h1>
+      <p className='opacity-50 mb-2'>by {owner}</p>
 
-      <DownloadSection release={release} detectedOS={detectedOS} />
-
-      <div className='border border-gray-200 rounded-lg p-6'>
-        <h2 className='text-xl font-semibold mb-4'>README</h2>
-        {readme ?
-          <div className='prose max-w-none'>
-            <pre className='whitespace-pre-wrap'>{readme.content}</pre>
-          </div>
-        : <p className='text-gray-700'>No README found for this repository.</p>}
+      <div className='flex justify-center mb-4'>
+        <DownloadSection release={release} detectedOS={detectedOS} />
       </div>
+
+      {readme ?
+        <div className='prose max-w-none'>
+          <pre className='whitespace-pre-wrap'>{readme.content}</pre>
+        </div>
+      : <p className='text-gray-700'>No README found for this repository.</p>}
     </div>
   )
 }

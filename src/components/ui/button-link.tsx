@@ -21,8 +21,8 @@ function ButtonLink({
   }, [])
 
   return (
-    <Button ref={buttonRef} {...props}>
-      <a ref={aRef} className={className} href={href} download={download}>
+    <Button ref={buttonRef} className={className} {...props}>
+      <a ref={aRef} href={href} download={download} rel='noopener noreferrer' target='_blank'>
         {children}
       </a>
     </Button>
