@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import Markdown from 'react-markdown'
 import { parseAsString, useQueryState } from 'nuqs'
-import { GithubApi, type GithubResponse } from '../clients/github/api'
-import { Button } from './Button'
-import { detectOS, getAppropriateAsset, type SupportedOS } from '@/lib/utils/detectOS'
-import { withNuqsAdapter } from './NuqsProvider'
+import remarkGfm from 'remark-gfm'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { DownloadSection } from '@/components/features/DownloadSection'
+import { type SupportedOS, detectOS } from '@/lib/utils/detectOS'
 
 function _RepositoryDetail() {
   const [owner] = useQueryState('u', parseAsString)
@@ -14,7 +16,6 @@ function _RepositoryDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [detectedOS, setDetectedOS] = useState<SupportedOS>('unknown')
-  const [downloadAsset, setDownloadAsset] = useState<{ name: string; url: string } | null>(null)
 
   useEffect(() => {
     // Detect OS on client side
@@ -25,21 +26,13 @@ function _RepositoryDetail() {
 
       try {
         setLoading(true)
-
-        // Fetch readme and release data in parallel
         const [readmeData, releaseData] = await Promise.all([
           GithubApi.getReadme({ owner, repo }),
-          GithubApi.getLatestRelease({ owner: owner, repo: repo }).catch(() => null),
+          GithubApi.getLatestRelease({ owner, repo }).catch(() => null),
         ])
 
         setReadme(readmeData)
         setRelease(releaseData)
-
-        // Find appropriate asset for the detected OS
-        if (releaseData) {
-          const asset = getAppropriateAsset(releaseData.assets, detectOS())
-          setDownloadAsset(asset)
-        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch repository data')
       } finally {
@@ -57,60 +50,24 @@ function _RepositoryDetail() {
   if (error) {
     return <div className='text-center text-red-500 p-4'>{error}</div>
   }
+  console.debug({ content: readme?.content })
 
   return (
     <div className='w-full max-w-4xl mx-auto'>
-      <h1 className='text-2xl font-bold mb-2'>{repo}</h1>
-      <p className='text-gray-500 mb-8'>by {owner}</p>
+      <h1 className='text-2xl font-bold'>{repo}</h1>
+      <p className='opacity-50 mb-2'>by {owner}</p>
 
-      {/* Download Section */}
-      <div className='bg-gray-100 p-6 rounded-lg mb-8 flex flex-col items-center'>
-        <h2 className='text-xl font-semibold mb-4'>Download Latest Release</h2>
-
-        {!release && <p className='text-gray-700'>No releases found for this repository.</p>}
-
-        {release && !downloadAsset && (
-          <div className='text-center'>
-            <p className='text-gray-700 mb-4'>
-              No compatible binary found for your operating system ({detectedOS}
-              ).
-            </p>
-            <p className='text-sm'>
-              You can browse all available files in the{' '}
-              <a
-                href={release.html_url}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-blue-500 hover:underline'
-              >
-                release page
-              </a>
-              .
-            </p>
-          </div>
-        )}
-
-        {release && downloadAsset && (
-          <div className='text-center'>
-            <p className='text-gray-700 mb-4'>
-              We found a compatible binary for your {detectedOS} system:
-            </p>
-            <p className='font-medium mb-2'>{downloadAsset.name}</p>
-            <a href={downloadAsset.url} download>
-              <Button className='text-lg py-3 px-8 mt-2'>DOWNLOAD</Button>
-            </a>
-          </div>
-        )}
+      <div className='flex justify-center mb-4'>
+        <DownloadSection release={release} detectedOS={detectedOS} />
       </div>
 
-      <div className='border border-gray-200 rounded-lg p-6'>
-        <h2 className='text-xl font-semibold mb-4'>README</h2>
-        {readme ?
-          <div className='prose max-w-none'>
-            <pre className='whitespace-pre-wrap'>{readme.content}</pre>
-          </div>
-        : <p className='text-gray-700'>No README found for this repository.</p>}
-      </div>
+      {readme ?
+        <div className='typography max-w-none bg-zinc-50 border-zinc-200 dark:bg-zinc-900 border dark:border-zinc-800 px-8 py-1'>
+          <Markdown skipHtml remarkPlugins={[remarkGfm]}>
+            {readme.content}
+          </Markdown>
+        </div>
+      : <p className='text-gray-700'>No README found for this repository.</p>}
     </div>
   )
 }

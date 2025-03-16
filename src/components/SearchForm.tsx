@@ -1,41 +1,58 @@
-import React, { useState } from 'react'
-import { Button } from './Button'
-import { withNuqsAdapter } from './NuqsProvider'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'astro:schema'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 
-function _SearchForm() {
-  const [searchTerm, setSearchTerm] = useState('')
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
+  }),
+})
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchTerm.trim()) {
-      window.location.href = `/user?u=${encodeURIComponent(searchTerm.trim())}`
-    }
+function _UserSearchForm() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+    },
+  })
+
+  function onSubmit({ username }: z.infer<typeof formSchema>) {
+    window.location.href = `/user?u=${encodeURIComponent(username.trim())}`
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className='flex flex-col items-center gap-4 w-full max-w-md mx-auto p-6'
-    >
-      <h1 className='text-2xl font-bold mb-4'>GitHub Binary Downloader</h1>
-      <p className='text-center mb-6'>
-        Find and download executable files from GitHub repositories without the complexity.
-      </p>
-      <div className='flex w-full'>
-        <input
-          type='text'
-          placeholder='Enter GitHub username...'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className='flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-          aria-label='GitHub username'
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='flex'>
+        <FormField
+          control={form.control}
+          name='username'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Github user name</FormLabel>
+              <div className='flex gap-2'>
+                <FormControl>
+                  <Input placeholder='sherlock-project' {...field} />
+                </FormControl>
+                <Button type='submit'>Search user</Button>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Button type='submit' className='rounded-l-none px-6 py-2'>
-          Search
-        </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   )
 }
 
-export const SearchForm = withNuqsAdapter(_SearchForm)
+export const UserSearchForm = withNuqsAdapter(_UserSearchForm)

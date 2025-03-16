@@ -1,11 +1,12 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import { SearchForm } from '@/components/SearchForm'
+import { UserSearchForm } from '@/components/SearchForm'
 ---
 
 <Layout>
-  <main class='container mx-auto py-12 px-4'>
-    <SearchForm client:load />
-    <footer class='text-center text-gray-500 text-sm mt-20'>brought to you by smelly nerds</footer>
-  </main>
+  <article class='typography mb-8 text-center'>
+    <h1 class='mb-0'>fknexe</h1>
+    <h3 class='mt-0'>Just download a fucking exe from Github</h3>
+  </article>
+  <UserSearchForm client:load />
 </Layout>

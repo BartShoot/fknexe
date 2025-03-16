@@ -1,9 +1,11 @@
 ---
-import '../styles/global.css'
+import '@/styles/global.css'
+import '@fontsource-variable/inter'
+import { App } from '@/layouts/App'
 ---
 
 <!doctype html>
-<html lang='en'>
+<html lang='en' class='size-full'>
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
@@ -15,7 +17,9 @@ import '../styles/global.css'
       content='A simple way to download binaries from GitHub repositories without technical knowledge.'
     />
   </head>
-  <body class='min-h-screen bg-gray-50'>
-    <slot />
+  <body class='size-full flex flex-col mt-6'>
+    <App client:only='react'>
+      <slot />
+    </App>
   </body>
 </html>
