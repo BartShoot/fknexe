@@ -71,11 +71,11 @@ function _UserRepositories() {
               </CardTitle>
               <TooltipProvider>
                 <Tooltip>
-                  <ButtonLink variant='ghost' size='icon' href={repo.html_url}>
-                    <TooltipTrigger asChild>
+                  <TooltipTrigger>
+                    <ButtonLink variant='ghost' size='icon' href={repo.html_url}>
                       <Github />
-                    </TooltipTrigger>
-                  </ButtonLink>
+                    </ButtonLink>
+                  </TooltipTrigger>
                   <TooltipContent>
                     <p>View on GitHub</p>
                   </TooltipContent>
