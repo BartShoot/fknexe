@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useQueryState, parseAsString } from 'nuqs'
-import { GithubApi, type GithubResponse } from '../clients/github/api'
-import { Button } from './Button'
-import { withNuqsAdapter } from './NuqsProvider'
+import { Github, Star } from 'lucide-react'
+import { parseAsString, useQueryState } from 'nuqs'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
+import { withNuqsAdapter } from '@/components/NuqsProvider'
+import { Button } from '@/components/ui/button'
+import { ButtonLink } from '@/components/ui/button-link'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)
@@ -47,22 +58,44 @@ function _UserRepositories() {
       <h2 className='text-xl font-bold mb-6'>{owner}'s Repositories</h2>
       <div className='grid gap-4'>
         {repositories.map((repo) => (
-          <div
-            key={repo.id}
-            className='border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors'
-          >
-            <h3 className='text-lg font-medium'>{repo.name}</h3>
-            {repo.description && <p className='text-gray-600 my-2'>{repo.description}</p>}
-            <div className='flex items-center gap-4 mt-3'>
-              <span className='text-sm text-gray-500'>⭐ {repo.stargazers_count}</span>
+          <Card key={repo.id}>
+            <CardHeader className='flex items-center justify-between'>
+              <CardTitle className='flex items-center gap-2'>
+                <div className='typography'>
+                  <h3 className='!m-0'>{repo.name}</h3>
+                </div>
+                <div className='flex items-center gap-1 text-sm'>
+                  <Star size={16} className='fill-yellow-600 stroke-yellow-600' />{' '}
+                  {repo.stargazers_count}
+                </div>
+              </CardTitle>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <ButtonLink variant='ghost' size='icon' href={repo.html_url}>
+                      <Github />
+                    </ButtonLink>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View on GitHub</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </CardHeader>
+            {repo.description && (
+              <CardContent>
+                <CardDescription>{repo.description}</CardDescription>
+              </CardContent>
+            )}
+            <CardFooter className='py-2'>
               <a
-                href={`/user/repository?u=${encodeURIComponent(owner || '')}&r=${encodeURIComponent(repo.name)}`}
+                href={`/user/repository?u=${encodeURIComponent(owner ?? '')}&r=${encodeURIComponent(repo.name)}`}
                 className='block'
               >
                 <Button>View Details</Button>
               </a>
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>

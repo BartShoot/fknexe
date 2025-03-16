@@ -1,10 +1,9 @@
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import type { IAsset } from '@/lib/types'
 import { UAParser } from 'ua-parser-js'
-import { OS, CPU } from 'ua-parser-js/enums'
+import { CPU, OS } from 'ua-parser-js/enums'
 
 type OSType = (typeof OS)[keyof typeof OS]
-
 const osSynonyms: Record<string, string[]> = {
   [OS.WINDOWS.toLowerCase()]: [
     'windows',
@@ -251,7 +250,7 @@ class PackageService {
       }
     }
 
-    const archName = ua.cpu.architecture?.toLowerCase() || ''
+    const archName = ua.cpu.architecture?.toLowerCase() ?? ''
     let matchesOtherArch = false
     for (const [otherArchs, synonyms] of Object.entries(archSynonyms)) {
       if (otherArchs !== archName) {

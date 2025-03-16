@@ -4,12 +4,5 @@ import { GitHubApiTester } from '@/components/GithubClientTester'
 ---
 
 <Layout>
-  <main class='container mx-auto py-12 px-4'>
-    <GitHubApiTester client:load />
-
-    <footer class='text-center text-gray-500 text-sm mt-20'>
-      <p>This is a development-only page for testing the GitHub API client.</p>
-      <p>It's excluded from production builds thanks to the underscore prefix in the filename.</p>
-    </footer>
-  </main>
+  <GitHubApiTester client:load />
 </Layout>
