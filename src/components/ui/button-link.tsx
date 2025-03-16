@@ -2,13 +2,18 @@ import * as React from 'react'
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 
+type Nullable<T> = { [K in keyof T]: T[K] | null }
+
 function ButtonLink({
   children,
   className,
   href,
   download,
+  rel = 'noopener noreferrer',
+  target = '_blank',
   ...props
-}: React.ComponentProps<typeof Button> & Pick<React.ComponentProps<'a'>, 'href' | 'download'>) {
+}: Omit<React.ComponentProps<typeof Button>, 'rel'> &
+  Nullable<Pick<React.ComponentProps<'a'>, 'href' | 'download' | 'target' | 'rel'>>) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const aRef = useRef<HTMLAnchorElement>(null)
 
@@ -22,7 +27,13 @@ function ButtonLink({
 
   return (
     <Button ref={buttonRef} className={className} {...props}>
-      <a ref={aRef} href={href} download={download} rel='noopener noreferrer' target='_blank'>
+      <a
+        ref={aRef}
+        href={href ?? undefined}
+        download={download}
+        rel={rel ?? undefined}
+        target={target ?? undefined}
+      >
         {children}
       </a>
     </Button>

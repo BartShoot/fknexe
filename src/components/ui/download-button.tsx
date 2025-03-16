@@ -5,7 +5,7 @@ export const DownloadButton = ({
   ...props
 }: Omit<React.ComponentProps<typeof ButtonLink>, 'download' | 'variant'>) => {
   return (
-    <ButtonLink {...props} download variant='download' size='download'>
+    <ButtonLink {...props} download variant='download' size='download' rel={null} target={null}>
       <GradientText
         colors={['#ffccff', '#ffffcc', '#ccffff']}
         animationSpeed={3}
