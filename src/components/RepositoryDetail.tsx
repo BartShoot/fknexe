@@ -1,6 +1,7 @@
-// src/components/RepositoryDetail.tsx
 import { useEffect, useState } from 'react'
+import Markdown from 'react-markdown'
 import { parseAsString, useQueryState } from 'nuqs'
+import remarkGfm from 'remark-gfm'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { DownloadSection } from '@/components/features/DownloadSection'
@@ -49,6 +50,7 @@ function _RepositoryDetail() {
   if (error) {
     return <div className='text-center text-red-500 p-4'>{error}</div>
   }
+  console.debug({ content: readme?.content })
 
   return (
     <div className='w-full max-w-4xl mx-auto'>
@@ -60,8 +62,10 @@ function _RepositoryDetail() {
       </div>
 
       {readme ?
-        <div className='prose max-w-none'>
-          <pre className='whitespace-pre-wrap'>{readme.content}</pre>
+        <div className='typography max-w-none bg-zinc-50 border-zinc-200 dark:bg-zinc-900 border dark:border-zinc-800 px-8 py-1'>
+          <Markdown skipHtml remarkPlugins={[remarkGfm]}>
+            {readme.content}
+          </Markdown>
         </div>
       : <p className='text-gray-700'>No README found for this repository.</p>}
     </div>
