@@ -1,7 +1,7 @@
-import { GithubApi, type GithubResponse } from '@/clients/github/api'
-import type { IAsset } from '@/lib/types'
 import { UAParser } from 'ua-parser-js'
 import { CPU, OS } from 'ua-parser-js/enums'
+import { GithubApi, type GithubResponse } from '@/clients/github/api'
+import type { IAsset } from '@/lib/types'
 
 type OSType = (typeof OS)[keyof typeof OS]
 const osSynonyms: Record<string, string[]> = {
@@ -74,22 +74,33 @@ class PackageService {
   }
 
   getSortedRankedPackages(packages: IAsset[], ua: UAParser.IResult) {
-    return this.rankPackages(packages, ua).sort((a, b) => {
-      const bHasOS = b.matchInfo.matches.exact_match.includes('OS')
-      const aHasOS = a.matchInfo.matches.exact_match.includes('OS')
-      return (
-        b.matchInfo.score - a.matchInfo.score ||
-        ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
-        b.package.download_count - a.package.download_count
-      )
-    })
+    return this.rankPackages(
+      packages.flatMap((p) => p.name),
+      ua,
+    )
+      .map((ranked) => {
+        const originalPackage = packages.find((pkg) => pkg.name === ranked.packageName)!!
+        return {
+          ...originalPackage,
+          matchInfo: ranked.matchInfo,
+        }
+      })
+      .sort((a, b) => {
+        const bHasOS = b.matchInfo.matches.exact_match.includes('OS')
+        const aHasOS = a.matchInfo.matches.exact_match.includes('OS')
+        return (
+          b.matchInfo.score - a.matchInfo.score ||
+          ((bHasOS && !aHasOS) || (!bHasOS && aHasOS) ? 1 : -1) ||
+          b.download_count - a.download_count
+        )
+      })
   }
 
-  rankPackages(packages: IAsset[], ua: UAParser.IResult) {
-    return packages.map((pkg) => {
+  rankPackages(packageNames: string[], ua: UAParser.IResult) {
+    return packageNames.map((name) => {
       // TODO: take package name from name or common parts
-      const matchInfo = this.matchInfo(pkg, ua)
-      return { package: pkg, matchInfo }
+      const matchInfo = this.matchInfo(name, ua)
+      return { packageName: name, matchInfo }
     })
   }
 
@@ -205,14 +216,13 @@ class PackageService {
     }
   }
 
-  matchInfo(p: IAsset, ua: UAParser.IResult) {
+  matchInfo(packageName: string, ua: UAParser.IResult) {
     let score = 0
     const matches = {
       exact_match: [] as string[],
       partial_match: [] as string[],
       conflicts: [] as string[],
     }
-    const packageName = p.name.toLowerCase()
     const osName = this.getCurrentOS(ua.os).toLowerCase()
     const currentOsSynonyms = osSynonyms[osName]
 

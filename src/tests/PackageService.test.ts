@@ -1,23 +1,25 @@
-import { describe, expect, test } from 'vitest'
-import { PackageService } from '../services/PackageService.ts'
 import { UAParser } from 'ua-parser-js'
-import { assets, testCases } from './data/packages.mock.ts'
+import { describe, expect, test } from 'vitest'
+import { PackageService } from '@/services/PackageService.ts'
+import { testCases } from '@/tests/data/packages.mock.ts'
 
 describe('get sorted packages', () => {
-  test.each(testCases)('ranked based on $name', ({ ua, expectedMatches }) => {
+  test.each(testCases)('ranked based on $name', ({ ua, cases }) => {
     const userAgent = UAParser(ua)
     console.log({ name: userAgent.os.name, arch: userAgent.cpu.architecture })
-    const ranked = PackageService.getSortedRankedPackages(assets, userAgent)
+    const ranked = PackageService.rankPackages(cases.names, userAgent)
     console.log(
-      ranked.map(
-        (r) =>
-          r.package.name +
-          ' - score: ' +
-          r.matchInfo.score +
-          ' exactMatch: {' +
-          r.matchInfo.matches.exact_match.join(', ') +
-          '}',
-      ),
+      ranked
+        .sort((a, b) => b.matchInfo.score - a.matchInfo.score)
+        .map(
+          (r) =>
+            r.packageName +
+            ' - score: ' +
+            r.matchInfo.score +
+            ' exactMatch: {' +
+            r.matchInfo.matches.exact_match.join(', ') +
+            '}',
+        ),
     )
     ranked.forEach((p) => {
       const exactMatch = p.matchInfo.matches.exact_match
@@ -25,9 +27,9 @@ describe('get sorted packages', () => {
       const uniqueCount = new Set(exactMatch).size
       expect(arrLength).toBe(uniqueCount)
     })
-    if (expectedMatches) {
-      for (const [fileName, expectedExactMatches] of Object.entries(expectedMatches)) {
-        const matchedPackage = ranked.find((p) => p.package.name === fileName)
+    if (cases.expectedMatches) {
+      for (const [fileName, expectedExactMatches] of Object.entries(cases.expectedMatches)) {
+        const matchedPackage = ranked.find((p) => p.packageName === fileName)
 
         if (matchedPackage) {
           const actualMatches = matchedPackage.matchInfo.matches.exact_match
