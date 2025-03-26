@@ -5,13 +5,11 @@ import { testCases } from '@/tests/data/packages.mock.ts'
 
 describe('correct matches', () => {
   testCases.forEach((testScenario) => {
-    testScenario.cases.forEach((individualCase) => {
-      it(`${testScenario.name} - ${individualCase.id}`, () => {
-        const ua = testScenario.ua
-        const cases = individualCase
-        const userAgent = UAParser(ua)
+    testScenario.cases.forEach((thisCase) => {
+      it(`${testScenario.name} - ${thisCase.id}`, () => {
+        const userAgent = UAParser(testScenario.ua)
         console.log({ name: userAgent.os.name, arch: userAgent.cpu.architecture })
-        const ranked = PackageService.rankPackages(cases.names, userAgent)
+        const ranked = PackageService.rankPackages(thisCase.names, userAgent)
         console.log(
           ranked
             .sort((a, b) => b.matchInfo.score - a.matchInfo.score)
@@ -31,8 +29,8 @@ describe('correct matches', () => {
           const uniqueCount = new Set(exactMatch).size
           expect(arrLength).toBe(uniqueCount)
         })
-        if (cases.expectedMatches) {
-          for (const [fileName, expectedExactMatches] of Object.entries(cases.expectedMatches)) {
+        if (thisCase.expectedMatches) {
+          for (const [fileName, expectedExactMatches] of Object.entries(thisCase.expectedMatches)) {
             const matchedPackage = ranked.find((p) => p.packageName === fileName)
 
             if (matchedPackage) {
