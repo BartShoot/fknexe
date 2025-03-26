@@ -50,7 +50,8 @@ File: ${fileName}
 Expected ${expectedMatchesSet.size} exact matches: [${[...expectedMatchesSet].join(', ')}]
 Actual ${actualMatchesSet.size} exact matches: [${[...actualMatchesSet].join(', ')}]
 ${extraItems.length > 0 ? `Extra items: [${extraItems.join(', ')}]` : ''}
-${missingItems.length > 0 ? `Missing items: [${missingItems.join(', ')}]` : ''}
+${missingItems.length > 0 ? `Missing items: actualMatches[${missingItems.join(', ')}]` : ''}
+${JSON.stringify(matchedPackage.matchInfo.matches)}
 `
             expect.fail(errorMessage)
           }

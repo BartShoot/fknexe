@@ -217,117 +217,85 @@ class PackageService {
   }
 
   matchInfo(packageName: string, ua: UAParser.IResult) {
-    let score = 0
+    const score = { os: 0, arch: 0, ext: 0, conflicts: 0 }
     const matches = {
       exact_match: [] as string[],
       partial_match: [] as string[],
       conflicts: [] as string[],
     }
     const osName = this.getCurrentOS(ua.os).toLowerCase()
-    const currentOsSynonyms = osSynonyms[osName]
-
-    let matchesOtherOs = false
-    for (const [otherOs, synonyms] of Object.entries(osSynonyms)) {
-      if (otherOs !== osName) {
-        for (const synonym of synonyms) {
-          if (packageName.includes(synonym)) {
-            matchesOtherOs = true
-            break
-          }
-        }
-        if (matchesOtherOs) break
-      }
-    }
-
-    if (matchesOtherOs) {
-      // TODO: darwin vs win
-      score--
-      matches.conflicts.push('OS')
-    } else {
-      if (currentOsSynonyms) {
-        for (const synonym of currentOsSynonyms) {
-          if (packageName.includes(synonym)) {
-            score++
-            matches.exact_match.push('OS')
-            break
-          }
-        }
-      } else {
-        if (packageName.includes(osName)) {
-          score++
-          matches.exact_match.push('OS')
-        }
-      }
-    }
-
     const archName = ua.cpu.architecture?.toLowerCase() ?? ''
-    let matchesOtherArch = false
-    for (const [otherArchs, synonyms] of Object.entries(archSynonyms)) {
-      if (otherArchs !== archName) {
-        for (const synonym of synonyms) {
-          if (packageName.includes(synonym)) {
-            matchesOtherArch = true
-            break
-          }
-        }
-        if (matchesOtherArch) break
+
+    const osSynonymsList = osSynonyms[osName] ?? []
+    const osMatch = this.findBestMatch(packageName, [osName, ...osSynonymsList])
+    const allOsConflicts = Object.entries(osSynonyms)
+      .filter(([key]) => key !== osName)
+      .flatMap(([, synonyms]) => synonyms)
+    const osConflictMatch = this.findBestMatch(packageName, allOsConflicts)
+    const longestOsMatch = this.getLongestMatch([osMatch, osConflictMatch])
+
+    if (longestOsMatch) {
+      if (longestOsMatch === osMatch) {
+        score.os += 5
+        matches.exact_match.push(`OS`)
+      } else if (longestOsMatch === osConflictMatch) {
+        score.conflicts -= 2
+        matches.conflicts.push(`OS`)
       }
     }
 
-    if (matchesOtherArch) {
-      // TODO: x86 vs x86_64
-      score--
-      matches.conflicts.push('Architecture')
-    } else {
-      const currentArchSynonyms = archSynonyms[archName]
-      if (currentArchSynonyms) {
-        for (const synonym of currentArchSynonyms) {
-          if (packageName.includes(synonym)) {
-            score++
-            matches.exact_match.push('Architecture')
-            break
-          }
-        }
-      } else {
-        if (packageName.includes(archName)) {
-          score++
-          matches.exact_match.push('Architecture')
-        }
+    const archSynonymsList = archSynonyms[archName] ?? []
+    const archMatch = this.findBestMatch(packageName, [archName, ...archSynonymsList])
+    const allArchConflicts = Object.entries(archSynonyms)
+      .filter(([key]) => key !== archName)
+      .flatMap(([, synonyms]) => synonyms)
+    const archConflictMatch = this.findBestMatch(packageName, allArchConflicts)
+    const longestArchMatch = this.getLongestMatch([archMatch, archConflictMatch])
+
+    if (longestArchMatch) {
+      if (longestArchMatch === archMatch) {
+        score.arch += 3
+        matches.exact_match.push('Architecture')
+      } else if (longestArchMatch === archConflictMatch) {
+        score.conflicts -= 1
+        matches.conflicts.push(`Architecture`)
       }
     }
 
-    const currentOsExtensions = exclusiveExtensions[osName]
-    let matchesOtherExtension = false
-    for (const [extensionSource, extensions] of Object.entries(exclusiveExtensions)) {
-      if (extensionSource !== osName) {
-        for (const extension of extensions) {
-          if (packageName.includes(extension)) {
-            // TODO changes to ends with
-            matchesOtherExtension = true
-            break
-          }
-        }
-        if (matchesOtherExtension) break
+    const osExtensions = exclusiveExtensions[osName] ?? []
+    const extMatch = osExtensions.find((ext) => packageName.endsWith(ext))
+    const allExtConflicts = Object.entries(exclusiveExtensions)
+      .filter(([key]) => key !== osName)
+      .flatMap(([, extensions]) => extensions)
+    const extConflictMatch = this.findBestMatch(packageName, allExtConflicts)
+    const longestExtMatch = this.getLongestMatch([extMatch, extConflictMatch])
+    if (longestExtMatch) {
+      if (longestExtMatch === extMatch) {
+        score.ext += 2
+        matches.exact_match.push(`Extension`)
+      } else if (longestExtMatch === extConflictMatch) {
+        score.conflicts -= 1
+        matches.conflicts.push(`Extension`)
       }
     }
-    if (matchesOtherExtension) {
-      score--
-      matches.conflicts.push('Extension')
-    } else {
-      if (currentOsExtensions) {
-        for (const extension of currentOsExtensions) {
-          if (packageName.includes(extension)) {
-            score++
-            matches.exact_match.push('Extension')
-            break
-          }
-        }
-      }
-    }
+
     return {
-      score,
+      score: score.os + score.arch + score.ext + score.conflicts,
       matches,
     }
+  }
+
+  findBestMatch(packageName: string, potentialMatches: string[]): string | undefined {
+    const matches = potentialMatches.filter((match) => packageName.includes(match))
+    return matches.sort((a, b) => b.length - a.length)[0]
+  }
+
+  getLongestMatch(matches: (string | undefined)[]): string | undefined {
+    return matches.reduce((longest, current) => {
+      if (!current) return longest
+      if (!longest) return current
+      return current.length > longest.length ? current : longest
+    }, undefined)
   }
 }
 
