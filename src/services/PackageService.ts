@@ -1,10 +1,10 @@
 import { UAParser } from 'ua-parser-js'
 import { CPU, OS } from 'ua-parser-js/enums'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
-import type { IAsset, IMatchResult, OSType } from '@/lib/types'
+import type { IAsset, IMatchResult, IOSType, IRankedRelease } from '@/lib/types'
 
 class PackageService {
-  async getRankedPackages(owner: string, repo: string, userAgent: string) {
+  async getRankedPackages(owner: string, repo: string, userAgent: string): Promise<IRankedRelease> {
     const latestRelease: GithubResponse['getLatestRelease'] = await GithubApi.getLatestRelease({
       owner,
       repo,
@@ -206,8 +206,8 @@ const exclusiveExtensions: Record<string, string[]> = {
   [OS.LINUX.toLowerCase()]: ['.deb', '.rpm', '.appimage'],
 }
 
-function toOSType(value: string): OSType | undefined {
-  return (Object.values(OS) as string[]).includes(value) ? (value as OSType) : undefined
+function toOSType(value: string): IOSType | undefined {
+  return (Object.values(OS) as string[]).includes(value) ? (value as IOSType) : undefined
 }
 
 function getCurrentOS(os: UAParser.IOS) {
