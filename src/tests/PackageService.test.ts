@@ -10,7 +10,6 @@ describe('correct matches', () => {
       it(`${testScenario.name} - ${thisCase.id}`, () => {
         const userAgent = UAParser(testScenario.ua)
         console.log({ name: userAgent.os.name, arch: userAgent.cpu.architecture })
-        /*eslint dot-notation: ["error", { "allowKeywords": false }]*/
         const ranked = PackageService.rankPackages(thisCase.names, userAgent)
         console.log(
           ranked

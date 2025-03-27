@@ -38,7 +38,7 @@ class PackageService {
       })
   }
 
-  private rankPackages(packageNames: string[], ua: UAParser.IResult) {
+  rankPackages(packageNames: string[], ua: UAParser.IResult) {
     return packageNames.map((name) => {
       const matchInfo = this.matchInfo(name, ua)
       return { packageName: name, matchInfo }
