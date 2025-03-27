@@ -1,9 +1,10 @@
 import { UAParser } from 'ua-parser-js'
 import { describe, expect, it } from 'vitest'
 import { PackageService } from '@/services/PackageService.ts'
-import { testCases } from '@/tests/data/packages.mock.ts'
+import { getTestCases } from '@/tests/data/packages.mock.ts'
 
 describe('correct matches', () => {
+  const testCases = getTestCases()
   testCases.forEach((testScenario) => {
     testScenario.cases.forEach((thisCase) => {
       it(`${testScenario.name} - ${thisCase.id}`, () => {
