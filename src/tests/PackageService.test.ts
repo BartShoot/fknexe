@@ -10,7 +10,7 @@ describe('correct matches', () => {
       it(`${testScenario.name} - ${thisCase.id}`, () => {
         const userAgent = UAParser(testScenario.ua)
         console.log({ name: userAgent.os.name, arch: userAgent.cpu.architecture })
-        const ranked = PackageService.rankPackages(thisCase.names, userAgent)
+        const ranked = PackageService['rankPackages'](thisCase.names, userAgent)
         console.log(
           ranked
             .sort((a, b) => b.matchInfo.score - a.matchInfo.score)
