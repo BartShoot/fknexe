@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { type GithubResponse } from '@/clients/github/api'
 import { DownloadButton } from '@/components/ui/download-button'
+import { type IRankedRelease } from '@/lib/types'
 import { type SupportedOS, getAppropriateAsset } from '@/lib/utils/detectOS'
 
 interface DownloadSectionProps {
-  release: GithubResponse['getLatestRelease'] | null
+  release: IRankedRelease | null
   detectedOS: SupportedOS
 }
 
@@ -13,7 +13,7 @@ export function DownloadSection({ release, detectedOS }: DownloadSectionProps) {
 
   useEffect(() => {
     if (release) {
-      const asset = getAppropriateAsset(release.assets, detectedOS)
+      const asset = getAppropriateAsset(release.rankedPackages, detectedOS)
       setDownloadAsset(asset)
     }
   }, [release, detectedOS])
