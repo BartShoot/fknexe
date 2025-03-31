@@ -124,7 +124,7 @@ class PackageService {
         score *= 1
         matches.exact_match.push(type)
       } else if (longestMatch === conflictMatch) {
-        score *= 1
+        score *= -1
         matches.conflicts.push(type)
       }
       return true
