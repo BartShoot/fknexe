@@ -56,7 +56,7 @@ class PackageService {
 
     const osWeight = 5
     const osMatch = this.getOsMatch(packageName, osName)
-    const osScore = this.matchAgainstSynonyms(packageName, osSynonyms, osWeight, osScore, matches, osMatch, 'OS')
+    const osScore = this.matchAgainstSynonyms(packageName, osSynonyms, osName, osWeight, matches, osMatch, 'OS')
 
     const archWeight = 3
     const archMatch = this.getArchitectureMatch(packageName, archName)
