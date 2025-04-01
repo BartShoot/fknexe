@@ -6,14 +6,11 @@ interface ReleaseDisplayProps {
 }
 
 const ReleaseDisplay: React.FC<ReleaseDisplayProps> = ({ data }) => {
-  // Destructure for easier access
   const { latestRelease, rankedPackages } = data
 
-  // Separate the first package from the rest
   const firstPackage = rankedPackages?.[0]
   const otherPackages = rankedPackages?.slice(1) || []
 
-  // Helper function to format bytes
   const formatBytes = (bytes: number, decimals = 2): string => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -27,7 +24,7 @@ const ReleaseDisplay: React.FC<ReleaseDisplayProps> = ({ data }) => {
   const renderMatchTags = (matchInfo: IMatchResult) => {
     const { exact_match, partial_match, conflicts } = matchInfo.matches
     return (
-      <div className='flex flex-wrap gap-1 mt-1'>
+      <div className='flex flex-wrap gap-1 mt-2 mb-2'>
         {exact_match.map((match) => (
           <span
             key={`exact-${match}`}
@@ -94,9 +91,8 @@ const ReleaseDisplay: React.FC<ReleaseDisplayProps> = ({ data }) => {
               <p className='text-sm font-medium text-gray-800 break-words'>{firstPackage.name}</p>
               {firstPackage.matchInfo && renderMatchTags(firstPackage.matchInfo)}
             </div>
-            <p className='text-xs text-gray-600 mb-3'>
-              Size: {formatBytes(firstPackage.size)} | Downloads:{' '}
-              {firstPackage.download_count.toLocaleString()}
+            <p className='text-sm text-gray-600 mb-3 mt-3'>
+              Downloads: {firstPackage.download_count.toLocaleString()}
             </p>
             <a
               href={firstPackage.browser_download_url}
