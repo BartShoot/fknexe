@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
   searchInput: z.string().min(1, {
-    // Allow single character search now
     message: 'Search input cannot be empty.',
   }),
 })
@@ -35,7 +34,7 @@ function _UserSearchForm() {
     const trimmedInput = searchInput.trim()
     if (!trimmedInput) {
       form.setError('searchInput', { type: 'manual', message: 'Search input cannot be empty.' })
-      return // Prevent submission if empty after trimming
+      return
     }
 
     if (trimmedInput.includes('/')) {
@@ -51,9 +50,8 @@ function _UserSearchForm() {
         })
       }
     } else {
-      // No slash found, redirect to the combined search page
       const query = trimmedInput
-      window.location.href = `/search?q=${encodeURIComponent(query)}` // <-- UPDATED LINE
+      window.location.href = `/search?q=${encodeURIComponent(query)}`
     }
   }
 

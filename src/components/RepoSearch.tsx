@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
-// Import the Link icon
 import { Github, Star, Link } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { ButtonLink } from '@/components/ui/button-link'
-// Import Tooltip components
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 type RepoItem = GithubResponse['searchRepositories']['items'][number]
@@ -80,8 +78,8 @@ function _RepoSearch() {
                   <TooltipTrigger asChild>
                     <ButtonLink
                       variant='ghost'
-                      size='icon' // Use size="icon" for better spacing
-                      className='h-6 w-6 text-muted-foreground' // Adjusted size and color
+                      size='icon'
+                      className='h-6 w-6 text-muted-foreground'
                       href={repo.html_url}
                       target='_blank'
                       rel='noopener noreferrer'
@@ -98,7 +96,7 @@ function _RepoSearch() {
 
             {/* Middle section: Description */}
             {repo.description && (
-              <p className='text-sm text-gray-600 dark:text-gray-400 mb-2'>{repo.description}</p> // Added margin-bottom
+              <p className='text-sm text-gray-600 dark:text-gray-400 mb-2'>{repo.description}</p>
             )}
 
             {/* Bottom section: Homepage Icon/Link */}
@@ -117,7 +115,6 @@ function _RepoSearch() {
                       className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
                     >
                       <Link size={14} />
-                      {/* Optionally display a short text like "Homepage" or the domain */}
                       {<span>{new URL(repo.homepage).hostname}</span>}
                     </a>
                   </TooltipTrigger>

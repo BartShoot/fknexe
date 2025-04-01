@@ -10,7 +10,7 @@ type UserItem = GithubResponse['searchUsers']['items'][number]
 
 function TypeIcon({ type }: { type: UserItem['type'] }) {
   const iconSize = 16
-  const iconClassName = 'text-muted-foreground flex-shrink-0' // Added flex-shrink-0
+  const iconClassName = 'text-muted-foreground flex-shrink-0'
 
   if (type === 'Organization') {
     return (
