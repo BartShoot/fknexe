@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'astro:schema'
+// Or 'zod'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,73 +15,64 @@ import {
 import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
-  searchInput: z.string().min(2, {
-    message: 'Input must be at least 2 characters.',
+  searchInput: z.string().min(1, {
+    // Allow single character search now
+    message: 'Search input cannot be empty.',
   }),
 })
 
+type FormSchemaType = z.infer<typeof formSchema>
+
 function _UserSearchForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       searchInput: '',
     },
   })
 
-  type FormSchemaType = z.infer<typeof formSchema>
-
   function onSubmit({ searchInput }: FormSchemaType) {
     const trimmedInput = searchInput.trim()
+    if (!trimmedInput) {
+      form.setError('searchInput', { type: 'manual', message: 'Search input cannot be empty.' })
+      return // Prevent submission if empty after trimming
+    }
 
     if (trimmedInput.includes('/')) {
-      // Potentially a "user/repo" format
       const parts = trimmedInput.split('/')
-      // Basic validation: ensure exactly two non-empty parts
       if (parts.length === 2 && parts[0] && parts[1]) {
         const username = parts[0]
         const repository = parts[1]
-        // Redirect to the repository page
         window.location.href = `/user/repository?u=${encodeURIComponent(username)}&r=${encodeURIComponent(repository)}`
       } else {
-        // Handle invalid "user/repo" format - e.g., "user/", "/repo", "user/repo/extra"
-        // Option 1: Show an error message
         form.setError('searchInput', {
           type: 'manual',
           message: 'Invalid format. Use "username" or "username/repository".',
         })
-        // Option 2: Fallback to user search (treating the whole string as username)
-        // window.location.href = `/user?u=${encodeURIComponent(trimmedInput)}`;
-        // Let's go with Option 1 for better UX
       }
     } else {
-      // No slash found, treat as a username
-      const username = trimmedInput
-      // Redirect to the user page (existing behavior)
-      window.location.href = `/user?u=${encodeURIComponent(username)}`
+      // No slash found, redirect to the combined search page
+      const query = trimmedInput
+      window.location.href = `/search?q=${encodeURIComponent(query)}` // <-- UPDATED LINE
     }
   }
 
   return (
     <Form {...form}>
-      {/* Original className='flex' might need adjustment depending on desired layout */}
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-full max-w-md mx-auto'>
         <FormField
           control={form.control}
-          name='searchInput' // Updated name to match schema
+          name='searchInput'
           render={({ field }) => (
             <FormItem>
-              {/* Updated label */}
-              <FormLabel>Github Username, Repository or User/Repository</FormLabel>
+              <FormLabel>Search Github Users or Repositories</FormLabel>
               <div className='flex gap-2'>
                 <FormControl>
-                  {/* Updated placeholder */}
-                  <Input placeholder='e.g., octocat or octocat/Spoon-Knife' {...field} />
+                  <Input placeholder='e.g., fzf, octocat/Spoon-Knife' {...field} />
                 </FormControl>
-                {/* Updated button text */}
                 <Button type='submit'>Search</Button>
               </div>
-              <FormMessage />{' '}
-              {/* This will now show the custom error message if format is invalid */}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -88,4 +80,5 @@ function _UserSearchForm() {
     </Form>
   )
 }
+
 export const UserSearchForm = withNuqsAdapter(_UserSearchForm)
