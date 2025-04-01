@@ -143,7 +143,7 @@ function _RepositoryDetail() {
                 </Markdown>
               </div>
             : <div
-                className={`border border-dashed rounded-md p-6 min-h-[300px] flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400`}
+                className={`border border-dashed rounded-md p-6 min-h-[100px] flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400`}
               >
                 <p>No release notes found for this release.</p>
               </div>
