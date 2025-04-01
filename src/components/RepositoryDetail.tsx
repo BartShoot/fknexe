@@ -3,7 +3,6 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import ReleaseDisplay from '@/components/ReleaseDisplay'
-import { RankedReleases } from '@/components/RankedReleases'
 import type { IRankedRelease } from '@/lib/types'
 import { PackageService } from '@/services/PackageService'
 
@@ -71,7 +70,6 @@ function _RepositoryDetail() {
   //     </div>
   //   </div>
   // </div>
-
 }
 
 export const RepositoryDetail = withNuqsAdapter(_RepositoryDetail)
