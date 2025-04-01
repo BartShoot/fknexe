@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import Markdown from 'react-markdown'
 import { parseAsString, useQueryState } from 'nuqs'
-import remarkGfm from 'remark-gfm'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { RankedReleases } from '@/components/RankedReleases'
+import ReleaseDisplay from '@/components/ReleaseDisplay'
 import type { IRankedRelease } from '@/lib/types'
 import { PackageService } from '@/services/PackageService'
 
@@ -49,30 +47,29 @@ function _RepositoryDetail() {
   }
   console.debug({ content: readme?.content })
 
-  return (
-    <div className='w-full max-w-8/12 mx-auto'>
-      <h1 className='text-2xl font-bold'>{repo}</h1>
-      <p className='opacity-50 mb-2'>by {owner}</p>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div className='md:col-span-1'>
-          {/* Left column for README */}
-          {readme ?
-            <div className='typography max-w-none bg-zinc-50 border-zinc-200 dark:bg-zinc-900 border dark:border-zinc-800 px-8 py-1 rounded-md'>
-              <Markdown skipHtml remarkPlugins={[remarkGfm]}>
-                {readme.content}
-              </Markdown>
-            </div>
-          : <p className='text-gray-700'>No README found for this repository.</p>}
-        </div>
-        <div className='md:col-span-1'>
-          {/* Right column for Releases */}
-          <div className='flex justify-center mb-4'>
-            <RankedReleases release={release} />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  return ReleaseDisplay({ data: release!! })
+  // <div className='w-full max-w-8/12 mx-auto'>
+  //   <h1 className='text-2xl font-bold'>{repo}</h1>
+  //   <p className='opacity-50 mb-2'>by {owner}</p>
+  //   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+  //     <div className='md:col-span-1'>
+  //       {/* Left column for README */}
+  //       {readme ?
+  //         <div className='typography max-w-none bg-zinc-50 border-zinc-200 dark:bg-zinc-900 border dark:border-zinc-800 px-8 py-1 rounded-md'>
+  //           <Markdown skipHtml remarkPlugins={[remarkGfm]}>
+  //             {readme.content}
+  //           </Markdown>
+  //         </div>
+  //       : <p className='text-gray-700'>No README found for this repository.</p>}
+  //     </div>
+  //     <div className='md:col-span-1'>
+  //       {/* Right column for Releases */}
+  //       <div className='flex justify-center mb-4'>
+  //         <RankedReleases release={release} />
+  //       </div>
+  //     </div>
+  //   </div>
+  // </div>
 }
 
 export const RepositoryDetail = withNuqsAdapter(_RepositoryDetail)
