@@ -70,7 +70,7 @@ function _UserSearchForm() {
           render={({ field }) => (
             <FormItem>
               {/* Updated label */}
-              <FormLabel>Github Username or User/Repository</FormLabel>
+              <FormLabel>Github Username, Repository or User/Repository</FormLabel>
               <div className='flex gap-2'>
                 <FormControl>
                   {/* Updated placeholder */}
