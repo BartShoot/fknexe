@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'astro:schema'
+// Or 'zod'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,37 +15,60 @@ import {
 import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+  searchInput: z.string().min(1, {
+    message: 'Search input cannot be empty.',
   }),
 })
 
+type FormSchemaType = z.infer<typeof formSchema>
+
 function _UserSearchForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: '',
+      searchInput: '',
     },
   })
 
-  function onSubmit({ username }: z.infer<typeof formSchema>) {
-    window.location.href = `/user?u=${encodeURIComponent(username.trim())}`
+  function onSubmit({ searchInput }: FormSchemaType) {
+    const trimmedInput = searchInput.trim()
+    if (!trimmedInput) {
+      form.setError('searchInput', { type: 'manual', message: 'Search input cannot be empty.' })
+      return
+    }
+
+    if (trimmedInput.includes('/')) {
+      const parts = trimmedInput.split('/')
+      if (parts.length === 2 && parts[0] && parts[1]) {
+        const username = parts[0]
+        const repository = parts[1]
+        window.location.href = `/user/repository?u=${encodeURIComponent(username)}&r=${encodeURIComponent(repository)}`
+      } else {
+        form.setError('searchInput', {
+          type: 'manual',
+          message: 'Invalid format. Use "username" or "username/repository".',
+        })
+      }
+    } else {
+      const query = trimmedInput
+      window.location.href = `/search?q=${encodeURIComponent(query)}`
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='flex'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full max-w-md mx-auto'>
         <FormField
           control={form.control}
-          name='username'
+          name='searchInput'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Github user name</FormLabel>
+              <FormLabel>Search Github Users or Repositories</FormLabel>
               <div className='flex gap-2'>
                 <FormControl>
-                  <Input placeholder='sherlock-project' {...field} />
+                  <Input placeholder='e.g., fzf, octocat/Spoon-Knife' {...field} />
                 </FormControl>
-                <Button type='submit'>Search user</Button>
+                <Button type='submit'>Search</Button>
               </div>
               <FormMessage />
             </FormItem>

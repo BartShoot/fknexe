@@ -56,7 +56,15 @@ class PackageService {
 
     const osWeight = 5
     const osMatch = this.getOsMatch(packageName, osName)
-    const osScore = this.matchAgainstSynonyms(packageName, osSynonyms, osName, osWeight, matches, osMatch, 'OS')
+    const osScore = this.matchAgainstSynonyms(
+      packageName,
+      osSynonyms,
+      osName,
+      osWeight,
+      matches,
+      osMatch,
+      'OS',
+    )
 
     const archWeight = 3
     const archMatch = this.getArchitectureMatch(packageName, archName)
@@ -111,20 +119,20 @@ class PackageService {
   ): number {
     const allConflicts = Object.entries(synonyms)
       .filter(([key]) => key !== currentName)
-      .flatMap(([, synonyms]) => synonyms);
-    const conflictMatch = this.findBestMatch(packageName, allConflicts);
-    const longestMatch = this.getLongestMatch([match, conflictMatch]);
+      .flatMap(([, synonyms]) => synonyms)
+    const conflictMatch = this.findBestMatch(packageName, allConflicts)
+    const longestMatch = this.getLongestMatch([match, conflictMatch])
 
     if (longestMatch) {
       if (longestMatch === match) {
-        matches.exact_match.push(type);
-        return points;
+        matches.exact_match.push(type)
+        return points
       } else if (longestMatch === conflictMatch) {
-        matches.conflicts.push(type);
-        return -points;
+        matches.conflicts.push(type)
+        return -points
       }
     }
-    return 0;
+    return 0
   }
 
   private findBestMatch(packageName: string, potentialMatches: string[]): string | undefined {
