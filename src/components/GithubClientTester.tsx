@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
+import { UAParser } from 'ua-parser-js'
 import { GithubApi } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { Button } from '@/components/ui/button'
@@ -158,7 +159,7 @@ function _GitHubApiTester({
       case 'latest-release':
         return await GithubApi.getLatestRelease({ owner, repo })
       case 'ranked-release':
-        return await PackageService.getRankedPackages(owner, repo, navigator.userAgent)
+        return await PackageService.getRankedPackages(owner, repo, UAParser(navigator.userAgent))
       case 'releases':
         return await GithubApi.getReleases({ owner, repo })
       case 'readme':
