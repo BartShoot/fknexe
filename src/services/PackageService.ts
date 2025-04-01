@@ -46,7 +46,6 @@ class PackageService {
   }
 
   private matchInfo(packageName: string, ua: UAParser.IResult): IMatchResult {
-    const score = { os: 0, arch: 0, ext: 0, conflicts: 0 }
     const matches = {
       exact_match: [] as string[],
       partial_match: [] as string[],
@@ -55,39 +54,36 @@ class PackageService {
     const osName = getCurrentOS(ua.os).toLowerCase()
     const archName = ua.cpu.architecture?.toLowerCase() ?? ''
 
-    const osScore = 5
+    const osWeight = 5
     const osMatch = this.getOsMatch(packageName, osName)
-    this.matchAgainstSynonyms(packageName, osSynonyms, osName, osScore, matches, osMatch, 'OS')
-    score.os = osScore
+    const osScore = this.matchAgainstSynonyms(packageName, osSynonyms, osName, osWeight, matches, osMatch, 'OS')
 
-    const archScore = 3
+    const archWeight = 3
     const archMatch = this.getArchitectureMatch(packageName, archName)
-    this.matchAgainstSynonyms(
+    const archScore = this.matchAgainstSynonyms(
       packageName,
       archSynonyms,
       archName,
-      archScore,
+      archWeight,
       matches,
       archMatch,
       'Architecture',
     )
-    score.arch = archScore
 
-    const extScore = 2
+    const extWeight = 2
     const extMatch = this.getExtensionMatch(packageName, osName)
-    this.matchAgainstSynonyms(
+    const extScore = this.matchAgainstSynonyms(
       packageName,
       exclusiveExtensions,
       osName,
-      extScore,
+      extWeight,
       matches,
       extMatch,
       'Extension',
     )
-    score.ext = extScore
 
     return {
-      score: score.os + score.arch + score.ext + score.conflicts,
+      score: osScore + archScore + extScore,
       matches,
     }
   }
@@ -108,28 +104,27 @@ class PackageService {
     packageName: string,
     synonyms: Record<string, string[]>,
     currentName: string,
-    score: number,
+    points: number,
     matches: { exact_match: string[]; conflicts: string[] },
     match: string | undefined,
     type: string,
-  ) {
+  ): number {
     const allConflicts = Object.entries(synonyms)
       .filter(([key]) => key !== currentName)
-      .flatMap(([, synonyms]) => synonyms)
-    const conflictMatch = this.findBestMatch(packageName, allConflicts)
-    const longestMatch = this.getLongestMatch([match, conflictMatch])
+      .flatMap(([, synonyms]) => synonyms);
+    const conflictMatch = this.findBestMatch(packageName, allConflicts);
+    const longestMatch = this.getLongestMatch([match, conflictMatch]);
 
     if (longestMatch) {
       if (longestMatch === match) {
-        score *= 1
-        matches.exact_match.push(type)
+        matches.exact_match.push(type);
+        return points;
       } else if (longestMatch === conflictMatch) {
-        score *= 1
-        matches.conflicts.push(type)
+        matches.conflicts.push(type);
+        return -points;
       }
-      return true
     }
-    return false
+    return 0;
   }
 
   private findBestMatch(packageName: string, potentialMatches: string[]): string | undefined {
