@@ -9,6 +9,7 @@ import { App } from '@/layouts/App'
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
+    <meta name='color-scheme' content='dark light' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='generator' content={Astro.generator} />
     <title>fknexe - GitHub Binary Downloader</title>
@@ -19,7 +20,7 @@ import { App } from '@/layouts/App'
   </head>
   <!-- Don't change the Layout styles here, change them in App.tsx -->
   <body class='size-full flex flex-col'>
-    <App client:only='react'>
+    <App client:only='react' url={Astro.url}>
       <slot />
     </App>
   </body>

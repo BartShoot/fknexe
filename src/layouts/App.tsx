@@ -1,21 +1,20 @@
+import { LayoutFooter } from '@/components/layout/LayoutFooter'
+import { LayoutHeader } from '@/components/layout/LayoutHeader'
 import { ThemeProvider } from '@/components/theme-provider'
-import { ModeToggle } from '@/components/ui/mode-toggle'
 
 interface AppProps {
+  url: URL
   children: React.ReactNode
 }
 
-export const App = ({ children }: AppProps) => {
+export const App = ({ url, children }: AppProps) => {
+  console.debug({ url })
   return (
     <ThemeProvider defaultTheme='light' storageKey='ui-theme'>
-      <div className='flex flex-col min-h-full pt-4'>
-        <div className='fixed top-2 right-2'>
-          <ModeToggle />
-        </div>
+      <div className='flex flex-col min-h-full'>
+        <LayoutHeader showSearch={url.pathname !== '/'} />
         <main className='flex flex-col items-center flex-1'>{children}</main>
-        <footer className='text-center text-gray-500 text-sm py-4'>
-          brought to you by smelly nerds
-        </footer>
+        <LayoutFooter />
       </div>
     </ThemeProvider>
   )

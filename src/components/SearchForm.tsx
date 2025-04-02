@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
 const formSchema = z.object({
   searchInput: z.string().min(1, {
@@ -22,7 +23,13 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>
 
-function _UserSearchForm() {
+interface UserSearchFormProps {
+  className?: string
+  withLabel?: boolean
+  withSearchButton?: boolean
+}
+
+function _UserSearchForm({ className, withLabel, withSearchButton }: UserSearchFormProps) {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,18 +64,21 @@ function _UserSearchForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full max-w-md mx-auto'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn('w-full max-w-md mx-auto', className)}
+      >
         <FormField
           control={form.control}
           name='searchInput'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Search Github Users or Repositories</FormLabel>
+              {withLabel && <FormLabel>Search Github Users or Repositories</FormLabel>}
               <div className='flex gap-2'>
                 <FormControl>
                   <Input placeholder='e.g., fzf, octocat/Spoon-Knife' {...field} />
                 </FormControl>
-                <Button type='submit'>Search</Button>
+                {withSearchButton && <Button type='submit'>Search</Button>}
               </div>
               <FormMessage />
             </FormItem>
