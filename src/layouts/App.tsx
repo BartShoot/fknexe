@@ -8,7 +8,7 @@ interface AppProps {
 export const App = ({ children }: AppProps) => {
   return (
     <ThemeProvider defaultTheme='light' storageKey='ui-theme'>
-      <div className='flex flex-col min-h-full'>
+      <div className='flex flex-col min-h-full pt-4'>
         <div className='fixed top-2 right-2'>
           <ModeToggle />
         </div>

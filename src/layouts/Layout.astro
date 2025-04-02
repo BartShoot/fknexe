@@ -17,7 +17,8 @@ import { App } from '@/layouts/App'
       content='A simple way to download binaries from GitHub repositories without technical knowledge.'
     />
   </head>
-  <body class='size-full flex flex-col mt-6'>
+  <!-- Don't change the Layout styles here, change them in App.tsx -->
+  <body class='size-full flex flex-col'>
     <App client:only='react'>
       <slot />
     </App>
