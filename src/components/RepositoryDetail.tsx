@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip'
+import { Github } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import remarkGfm from 'remark-gfm'
 import { UAParser } from 'ua-parser-js'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { useTheme } from '@/components/theme-provider'
+import { ButtonLink } from '@/components/ui/button-link'
 import type { IRankedRelease, IMatchResult } from '@/lib/types'
 import { getCurrentOS, PackageService } from '@/services/PackageService'
 
@@ -118,9 +121,44 @@ function _RepositoryDetail() {
         <div className='md:w-2/3 flex flex-col gap-6'>
           {/* Release Notes */}
           <div className={`pb-4 border-b dark:border-zinc-800`}>
-            <h2 className={`text-2xl font-bold mb-2 dark:text-white`}>
-              Release Notes: {latestRelease.name} ({latestRelease.tag_name})
-            </h2>
+            <TooltipProvider delayDuration={300}>
+              <div className='flex items-center justify-between'>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <h2 className={`text-2xl font-bold mb-2 dark:text-white`}>
+                      <a
+                        href={latestRelease.html_url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='inline-block hover:bg-gray-100 hover:text-gray-700 transition duration-150 ease-in-out'
+                      >
+                        Release Notes: {latestRelease.name} ({latestRelease.tag_name})
+                      </a>
+                    </h2>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Open release on GitHub</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ButtonLink
+                      variant='ghost'
+                      size='icon'
+                      className='text-muted-foreground border-2'
+                      href={`https://github.com/${owner}/${repo}/`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <Github size={24} />
+                    </ButtonLink>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View on GitHub</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
             <p className={`text-sm mb-3 text-gray-600 dark:text-gray-400`}>
               {latestRelease.published_at && (
                 <span>
