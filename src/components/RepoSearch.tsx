@@ -115,7 +115,7 @@ function _RepoSearch() {
                       className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
                     >
                       <Link size={14} />
-                      {<span>{new URL(repo.homepage).hostname}</span>}
+                      {<span>{repo.homepage}</span>}
                     </a>
                   </TooltipTrigger>
                   <TooltipContent>
