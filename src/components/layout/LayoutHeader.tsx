@@ -14,6 +14,10 @@ export const LayoutHeader = ({ showSearch }: ILayoutHeaderProps) => {
       </div>
       <div className='flex items-center justify-center gap-8'>
         {showSearch && <UserSearchForm className='min-w-56' />}
+        {/* About Link */}
+        <a href='/about' className='text-sm font-medium hover:underline'>
+          About
+        </a>
         <ModeToggle />
       </div>
     </header>
