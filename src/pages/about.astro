@@ -1,0 +1,150 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { Github } from 'lucide-react'
+
+const pageTitle = 'About fknexe'
+const pageDescription = 'Simplifying GitHub downloads - just give me the executable!'
+
+const redditLink =
+  'https://www.reddit.com/r/github/comments/1at9br4/i_am_new_to_github_and_i_have_lots_to_say/'
+const projectRepoLink = 'https://github.com/BartShoot/fknexe/'
+const creatorBartShootLink = 'https://github.com/BartShoot'
+const creatorShipurjanLink = 'https://github.com/shipurjan'
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class='container mx-auto p-4 md:p-6 lg:p-8 max-w-4xl'>
+    {/* Added max-w-4xl for readability */}
+    <h1 class='text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white'>
+      {pageTitle}
+    </h1>
+
+    <div class='space-y-6 text-gray-700 dark:text-gray-300'>
+      {/* Added spacing and text colors */}
+      <p class='text-lg leading-relaxed'>
+        {/* Larger text for intro */}
+        Ever landed on a GitHub releases page, faced with a wall of files – <code
+          class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>tar.gz</code
+        >, <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>.zip</code>, <code
+          class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>amd64</code
+        >, <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>arm64</code>, <code
+          class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>windows</code
+        >, <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>linux</code>, <code
+          class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>darwin</code
+        > – and just thought: <strong class='font-semibold text-gray-900 dark:text-white'
+          >"Can I please just have the fucking file that runs on <em>my</em> computer?"</strong
+        >
+      </p>
+
+      <p>
+        You're not alone. This frustration is common for users who don't want to wade through build
+        intricacies or compile code themselves. They just want to <em>use</em> the software.
+      </p>
+
+      <p>
+        This sentiment was perfectly captured in a now-famous{' '}
+        <a
+          href={redditLink}
+          target='_blank'
+          rel='noopener noreferrer'
+          class='text-blue-600 dark:text-blue-400 hover:underline'
+        >
+          Reddit post
+        </a>
+        , where users voiced their simple need:
+      </p>
+
+      <blockquote
+        class='border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-6 text-gray-600 dark:text-gray-400'
+      >
+        <p>
+          "I DONT GIVE A FUCK ABOUT THE FUCKING CODE! i just want to download this stupid fucking
+          application and use it... MAKE A FUCKING .EXE FILE AND GIVE IT TO ME."
+        </p>
+        <cite class='block text-right text-sm not-italic text-gray-500 dark:text-gray-500 mt-2'
+          >- Reddit user</cite
+        >
+      </blockquote>
+
+      <h2 class='text-2xl font-semibold pt-4 text-gray-900 dark:text-white'>
+        {/* Added padding-top */}
+        The Solution: <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-xl'>fknexe</code>
+      </h2>
+
+      <p>
+        Inspired by these pleas, <strong class='font-semibold text-gray-900 dark:text-white'
+          ><code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>fknexe</code></strong
+        > was created to bridge this gap.
+      </p>
+
+      <p>
+        Our project aims to simplify the download process for end-users. It intelligently detects
+        the user's operating system (like Windows, macOS, or Linux) and system architecture (like
+        x64 or ARM64). Based on this information, it automatically identifies and downloads the most
+        appropriate ready-to-use package from the GitHub releases.
+      </p>
+
+      <p>
+        No more guesswork, no more downloading the wrong file. Just a simpler way to get the
+        software you need.
+      </p>
+
+      <h3 class='text-xl font-semibold pt-4 text-gray-900 dark:text-white'>
+        Check out the Project
+      </h3>
+
+      <p>
+        You can find the source code, contribute, or learn more about how <code
+          class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>fknexe</code
+        > works on GitHub:
+      </p>
+      <p>
+        {/* Styled link like a button */}
+        <a
+          href={projectRepoLink}
+          target='_blank'
+          rel='noopener noreferrer'
+          class='inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200 ease-in-out'
+        >
+          <Github />
+          Project Repository on GitHub
+        </a>
+      </p>
+
+      <h3 class='text-xl font-semibold pt-4 text-gray-900 dark:text-white'>Creators</h3>
+
+      <p>
+        <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>fknexe</code> is brought to you
+        by:
+      </p>
+      <ul class='list-disc list-inside space-y-1'>
+        <li>
+          <a
+            href={creatorBartShootLink}
+            target='_blank'
+            rel='noopener noreferrer'
+            class='text-blue-600 dark:text-blue-400 hover:underline'
+          >
+            BartShoot
+          </a>
+        </li>
+        <li>
+          <a
+            href={creatorShipurjanLink}
+            target='_blank'
+            rel='noopener noreferrer'
+            class='text-blue-600 dark:text-blue-400 hover:underline'
+          >
+            shipurjan
+          </a>
+        </li>
+      </ul>
+
+      <p class='pt-8 text-center text-gray-500 dark:text-gray-400'>
+        {/* Added padding-top */}
+        We hope <code class='bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm'>fknexe</code> makes your
+        experience with GitHub downloads a little less frustrating!
+      </p>
+    </div>
+  </div>
+</Layout>
