@@ -1,19 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Github, Star } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { Button } from '@/components/ui/button'
-import { ButtonLink } from '@/components/ui/button-link'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { RepositoryCard } from '@/components/RepositoryCard'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)
@@ -58,44 +47,7 @@ function _UserRepositories() {
       <h2 className='text-xl font-bold mb-6'>{owner}'s Repositories</h2>
       <div className='grid gap-4'>
         {repositories.map((repo) => (
-          <Card key={repo.id}>
-            <CardHeader className='flex items-center justify-between'>
-              <CardTitle className='flex items-center gap-2'>
-                <div className='typography'>
-                  <h3 className='!m-0'>{repo.name}</h3>
-                </div>
-                <div className='flex items-center gap-1 text-sm'>
-                  <Star size={16} className='fill-yellow-600 stroke-yellow-600' />{' '}
-                  {repo.stargazers_count}
-                </div>
-              </CardTitle>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <ButtonLink variant='ghost' size='icon' href={repo.html_url}>
-                      <Github />
-                    </ButtonLink>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View on GitHub</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </CardHeader>
-            {repo.description && (
-              <CardContent>
-                <CardDescription>{repo.description}</CardDescription>
-              </CardContent>
-            )}
-            <CardFooter className='py-2'>
-              <a
-                href={`/user/repository?u=${encodeURIComponent(owner ?? '')}&r=${encodeURIComponent(repo.name)}`}
-                className='block'
-              >
-                <Button>View Details</Button>
-              </a>
-            </CardFooter>
-          </Card>
+          <RepositoryCard key={repo.id} repo={repo} />
         ))}
       </div>
     </div>
