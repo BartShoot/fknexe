@@ -62,6 +62,25 @@ export function InstallationGuidance({
         {osName.toLowerCase() === 'macos' && <MacOSGuidance fileType={fileType} />}
         {osName.toLowerCase() === 'linux' && <LinuxGuidance fileType={fileType} />}
 
+        <div className='mt-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-xs text-yellow-800 dark:text-yellow-300'>
+          <h5 className='font-semibold mb-1'>Security Disclaimer</h5>
+          <p>
+            <strong>Important:</strong> These instructions are provided as general guidance only. We
+            take no responsibility for the safety, integrity, or behavior of any software you
+            download. Always:
+          </p>
+          <ul className='list-disc pl-5 mt-1 space-y-1'>
+            <li>Download software only from sources you trust</li>
+            <li>Verify checksums or digital signatures when available</li>
+            <li>Keep your operating system and antivirus software up-to-date</li>
+          </ul>
+          <p className='mt-1'>
+            By downloading and installing any software, you acknowledge that you do so at your own
+            risk. We do not endorse, verify, or take responsibility for any third-party
+            applications.
+          </p>
+        </div>
+
         <div className='mt-4 text-xs text-gray-500 dark:text-gray-400'>
           <p>
             Security Note: Modern operating systems include security measures that may show warnings
