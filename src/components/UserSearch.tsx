@@ -37,9 +37,10 @@ function TypeIcon({ type }: { type: UserItem['type'] }) {
 }
 
 function _UserSearch() {
-  const [query] = useQueryState('q', parseAsString.withDefault(''))
+  const [query] = useQueryState('q', parseAsString)
+
   const [users, setUsers] = useState<UserItem[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

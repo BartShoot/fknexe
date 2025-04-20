@@ -9,6 +9,8 @@ import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { useTheme } from '@/components/theme-provider'
 import { ButtonLink } from '@/components/ui/button-link'
+import { DownloadButton } from '@/components/ui/download-button'
+import { FileTypeExplanations } from '@/components/ui/file-type-explanations'
 import type { IRankedRelease, IMatchResult } from '@/lib/types'
 import { getCurrentOS, PackageService } from '@/services/PackageService'
 
@@ -234,15 +236,11 @@ function _RepositoryDetail() {
               <p className={`text-sm mb-3 mt-3 text-gray-600 dark:text-gray-300`}>
                 Downloads: {firstPackage.download_count.toLocaleString()}
               </p>
-              <a
-                href={firstPackage.browser_download_url}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-full text-sm transition duration-150 ease-in-out w-full text-center dark:bg-blue-500 dark:hover:bg-blue-400'
-                download
-              >
+              <DownloadButton href={firstPackage.browser_download_url}>
                 Download ({formatBytes(firstPackage.size)})
-              </a>
+              </DownloadButton>
+
+              {osName && <FileTypeExplanations osName={osName} />}
               <div className='mt-4 text-center'>
                 <p className='text-xs mt-2 text-gray-500 dark:text-gray-400'>
                   If this is not the right package for you, please let us know!
