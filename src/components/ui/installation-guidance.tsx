@@ -1,6 +1,5 @@
 // src/components/ui/installation-guidance.tsx
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip'
-import { HelpCircle, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface InstallationGuidanceProps {
@@ -22,25 +21,9 @@ export function InstallationGuidance({
 
   return (
     <div className='fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 shadow-lg border-t border-gray-200 dark:border-zinc-800 p-4 z-50 transition-transform duration-300 ease-in-out transform translate-y-0'>
-      <div className='container mx-auto max-w-3xl'>
+      <div className='container mx-auto max-w-5xl'>
         <div className='flex justify-between items-start mb-2'>
-          <h3 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
-            Installation Guide
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant='ghost' size='icon' className='ml-1'>
-                    <HelpCircle size={16} className='text-gray-500' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='text-sm max-w-xs'>
-                    These instructions will help you install the downloaded file on your system.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </h3>
+          <h3 className='text-xl font-bold text-gray-800 dark:text-gray-200'>Installation Guide</h3>
           <Button
             variant='ghost'
             size='icon'
@@ -62,8 +45,7 @@ export function InstallationGuidance({
         {osName.toLowerCase() === 'macos' && <MacOSGuidance fileType={fileType} />}
         {osName.toLowerCase() === 'linux' && <LinuxGuidance fileType={fileType} />}
 
-        <div className='mt-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-xs text-yellow-800 dark:text-yellow-300'>
-          <h5 className='font-semibold mb-1'>Security Disclaimer</h5>
+        <div className='text-xxs mt-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-xs text-yellow-800 dark:text-yellow-300'>
           <p>
             <strong>Important:</strong> These instructions are provided as general guidance only. We
             take no responsibility for the safety, integrity, or behavior of any software you
@@ -83,9 +65,9 @@ export function InstallationGuidance({
 
         <div className='mt-4 text-xs text-gray-500 dark:text-gray-400'>
           <p>
-            Security Note: Modern operating systems include security measures that may show warnings
-            when installing software from the internet. This is normal and helps protect your
-            system.
+            <strong>Security Note:</strong> Modern operating systems include security measures that
+            may show warnings when installing software from the internet. This is normal and helps
+            protect your system.
           </p>
         </div>
       </div>

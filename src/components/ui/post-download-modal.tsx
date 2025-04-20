@@ -66,16 +66,18 @@ export function PostDownloadModal({
               </div>
             </div>
           </div>
-          <button
-            type='button'
-            className='ml-3 flex-shrink-0 text-gray-400 hover:text-gray-600 focus:outline-none'
+
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={() => {
               setIsVisible(false)
               setTimeout(onClose, 300)
             }}
+            aria-label='Close download started confirmation modal'
           >
-            <X className='h-4 w-4' />
-          </button>
+            <X size={18} />
+          </Button>
         </div>
 
         <div className='mt-3 flex space-x-2'>

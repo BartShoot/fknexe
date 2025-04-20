@@ -116,24 +116,16 @@ function _RepoSearch() {
             {repo.homepage && (
               <div className='flex items-center mt-1'>
                 {' '}
-                {/* Wrapper for alignment */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={repo.homepage}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      aria-label='Repository Homepage'
-                      className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
-                    >
-                      <Link size={14} />
-                      {<span>{repo.homepage}</span>}
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{repo.homepage}</p> {/* Show full URL in tooltip */}
-                  </TooltipContent>
-                </Tooltip>
+                <a
+                  href={repo.homepage}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label='Repository Homepage'
+                  className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
+                >
+                  <Link size={14} />
+                  {<span>{repo.homepage}</span>}
+                </a>
               </div>
             )}
             {/* --- End Homepage Icon Logic --- */}
