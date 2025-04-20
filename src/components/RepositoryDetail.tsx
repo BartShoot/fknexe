@@ -10,7 +10,7 @@ import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { useTheme } from '@/components/theme-provider'
 import { ButtonLink } from '@/components/ui/button-link'
 import { DownloadButton } from '@/components/ui/download-button'
-import { FileTypeExplanations } from '@/components/ui/file-type-explanations'
+import { FileTypeExplanation } from '@/components/ui/file-type-explanation'
 import type { IRankedRelease, IMatchResult } from '@/lib/types'
 import { getCurrentOS, PackageService } from '@/services/PackageService'
 
@@ -240,7 +240,8 @@ function _RepositoryDetail() {
                 Download ({formatBytes(firstPackage.size)})
               </DownloadButton>
 
-              {osName && <FileTypeExplanations osName={osName} />}
+              <FileTypeExplanation fileType={getExtension(firstPackage.browser_download_url)} />
+
               <div className='mt-4 text-center'>
                 <p className='text-xs mt-2 text-gray-500 dark:text-gray-400'>
                   If this is not the right package for you, please let us know!
@@ -301,6 +302,12 @@ function _RepositoryDetail() {
       </div>
     </div>
   )
+
+  function getExtension(url: string): string {
+    const urlParts = url?.split('?')?.[0]?.split('/')
+    const fileName = urlParts?.[urlParts.length - 1]
+    return fileName?.split('.').pop() ?? ''
+  }
 }
 
 export const RepositoryDetail = withNuqsAdapter(_RepositoryDetail)

@@ -73,7 +73,6 @@ export const DownloadButton = ({
 
   // Extract file name from URL if not provided
   const displayFileName = (fileName || props.href?.split('/').pop()) ?? 'file'
-  console.debug({ fileName, props, displayFileName })
 
   return (
     <>
