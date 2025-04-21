@@ -25,7 +25,7 @@ export function PostDownloadModal({
   const [showSecurityGuide, setShowSecurityGuide] = useState(false)
 
   useEffect(() => {
-    let timer: NodeJS.Timer | null = null
+    let timer: Timer | null = null
 
     if (isOpen) {
       setIsVisible(true)
