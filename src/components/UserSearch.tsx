@@ -3,6 +3,7 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 import { UserCard } from '@/components/UserCard'
+import { Card, CardHeader } from '@/components/ui/card'
 
 type UserItem = GithubResponse['searchUsers']['items'][number]
 
@@ -27,7 +28,22 @@ function _UserSearch() {
       .finally(() => setLoading(false))
   }, [query])
 
-  if (loading) return <div className='p-4 text-center'>Loading users...</div>
+  if (loading)
+    return (
+      <div className='space-y-3'>
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <Card key={idx} className='animate-pulse'>
+            <CardHeader className='flex items-center justify-between p-2'>
+              <div className='flex items-center gap-3'>
+                <div className='h-8 w-8 bg-gray-300 rounded-full' />
+                <div className='h-4 bg-gray-300 rounded w-32' />
+              </div>
+              <div className='h-4 w-4 bg-gray-300 rounded' />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    )
   if (error) return <div className='p-4 text-center text-red-500'>{error}</div>
   if (!query) return <div className='p-4 text-gray-500'>Enter a search term to find users.</div>
   if (users.length === 0) return <div className='p-4'>No users found matching "{query}".</div>

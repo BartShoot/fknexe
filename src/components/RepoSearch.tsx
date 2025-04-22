@@ -5,6 +5,7 @@ import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
 // RepositoryCard handles repository display
 import { RepositoryCard } from '@/components/RepositoryCard'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
 
 type RepoItem = GithubResponse['searchRepositories']['items'][number]
 
@@ -37,7 +38,22 @@ function _RepoSearch() {
     fetchRepositories()
   }, [query])
 
-  if (loading) return <div className='p-4 text-center'>Loading repositories...</div>
+  if (loading)
+    return (
+      <div className='space-y-3'>
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <Card key={idx} className='animate-pulse'>
+            <CardHeader className='flex items-center justify-between'>
+              <div className='h-4 bg-gray-300 rounded w-3/5' />
+              <div className='h-4 bg-gray-300 rounded w-1/6' />
+            </CardHeader>
+            <CardContent>
+              <div className='h-3 bg-gray-300 rounded w-full' />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
   if (error) return <div className='p-4 text-center text-red-500'>{error}</div>
   if (!query)
     return <div className='p-4 text-gray-500'>Enter a search term to find repositories.</div>
