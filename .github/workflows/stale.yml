@@ -17,8 +17,8 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         # Issue settings
         days-before-issue-stale: 45
-        days-before-issue-close: 14
-        stale-issue-message: 'This issue has been automatically marked as stale because it has not had any activity in the last 45 days. It will be closed in 14 days if no further activity occurs. Thank you for your contributions!'
+        days-before-issue-close: -1
+        stale-issue-message: 'This issue has been automatically marked as stale because it has not had any activity in the last 45 days.'
         close-issue-message: 'This issue has been automatically closed due to inactivity. Feel free to reopen it if you still believe it is relevant.'
         stale-issue-label: 'no-issue-activity'
         exempt-issue-labels: 'bug,enhancement,documentation,help wanted,wip,do-not-close'
