@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { RepositoryCard } from '@/components/RepositoryCard'
+import { RepositoryCard } from '@/components/search/RepositoryCard'
 
 function _UserRepositories() {
   const [owner] = useQueryState('u', parseAsString)

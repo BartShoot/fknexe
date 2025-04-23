@@ -1,4 +1,4 @@
-import { PackageCard } from '@/components/PackageCard'
+import { PackageCard } from '@/components/release/PackageCard'
 import { type IRankedRelease } from '@/lib/types'
 
 interface RankedReleasesProps {

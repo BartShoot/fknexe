@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { UserCard } from '@/components/UserCard'
+import { UserCard } from '@/components/search/UserCard'
 import { Card, CardHeader } from '@/components/ui/card'
 
 type UserItem = GithubResponse['searchUsers']['items'][number]
