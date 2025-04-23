@@ -9,9 +9,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 type RepoItem = GithubResponse['searchRepositories']['items'][number]
 
 function _RepoSearch() {
-  const [query] = useQueryState('q', parseAsString.withDefault(''))
+  const [query] = useQueryState('q', parseAsString)
+
   const [repositories, setRepositories] = useState<RepoItem[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -37,12 +38,23 @@ function _RepoSearch() {
     fetchRepositories()
   }, [query])
 
-  if (loading) return <div className='p-4 text-center'>Loading repositories...</div>
-  if (error) return <div className='p-4 text-center text-red-500'>{error}</div>
-  if (!query)
+  console.debug({ query, repositories, loading, error })
+
+  if (loading) {
+    return <div className='p-4 text-center'>Loading repositories...</div>
+  }
+
+  if (error) {
+    return <div className='p-4 text-center text-red-500'>{error}</div>
+  }
+
+  if (!query) {
     return <div className='p-4 text-gray-500'>Enter a search term to find repositories.</div>
-  if (repositories.length === 0)
+  }
+
+  if (repositories.length === 0) {
     return <div className='p-4'>No repositories found matching "{query}".</div>
+  }
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -104,24 +116,16 @@ function _RepoSearch() {
             {repo.homepage && (
               <div className='flex items-center mt-1'>
                 {' '}
-                {/* Wrapper for alignment */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={repo.homepage}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      aria-label='Repository Homepage'
-                      className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
-                    >
-                      <Link size={14} />
-                      {<span>{repo.homepage}</span>}
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{repo.homepage}</p> {/* Show full URL in tooltip */}
-                  </TooltipContent>
-                </Tooltip>
+                <a
+                  href={repo.homepage}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label='Repository Homepage'
+                  className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
+                >
+                  <Link size={14} />
+                  {<span>{repo.homepage}</span>}
+                </a>
               </div>
             )}
             {/* --- End Homepage Icon Logic --- */}
