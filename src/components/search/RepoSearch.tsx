@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Github, Star, Link as LinkIcon } from 'lucide-react'
 // Renamed Link to LinkIcon
-import { parseAsString, useQueryState } from 'nuqs'
-import { GithubApi, type GithubResponse } from '@/clients/github/api'
-import { withNuqsAdapter } from '@/components/NuqsProvider'
+import type { GithubResponse } from '@/clients/github/api'
 import { ButtonLink } from '@/components/ui/button-link'
 import { Card, CardHeader } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -16,15 +14,13 @@ interface RepoListItemProps {
 }
 
 const RepoListItem: React.FC<RepoListItemProps> = ({ repo }) => {
-  // Use optional chaining for safer access
   const ownerLogin = repo.owner?.login
   const repoName = repo.name
 
-  // Generate internal link only if owner and repo name exist
   const internalLink =
     ownerLogin && repoName ?
       `/user/repository?u=${encodeURIComponent(ownerLogin)}&r=${encodeURIComponent(repoName)}`
-    : '#' // Fallback link if data is missing
+    : '#'
 
   return (
     <div
@@ -107,53 +103,14 @@ const RepoListItem: React.FC<RepoListItemProps> = ({ repo }) => {
   )
 }
 
-// Main Search Component
-function _RepoSearch() {
-  // Using 'q' for query parameter, consistent with GitHub search
-  const [query] = useQueryState('q', parseAsString.withDefault(''))
-  const [repositories, setRepositories] = useState<RepoItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export interface RepoSearchProps {
+  repositories: RepoItem[]
+  loading: boolean
+  error: string | null
+  query: string
+}
 
-  useEffect(() => {
-    const fetchRepositories = async () => {
-      // Only search if query is not empty
-      if (!query) {
-        setRepositories([])
-        setLoading(false)
-        setError(null)
-        return
-      }
-
-      setLoading(true)
-      setError(null)
-
-      try {
-        // Use sort=stars&order=desc for potentially more relevant results by default
-        const response = await GithubApi.searchRepositories({
-          q: query,
-          sort: 'stars',
-          order: 'desc',
-          per_page: 30, // Limit results per page
-        })
-        setRepositories(response.items || [])
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch repositories')
-        setRepositories([]) // Clear results on error
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    // Debounce the fetch call slightly to avoid excessive API calls while typing
-    const debounceTimer = setTimeout(() => {
-      fetchRepositories()
-    }, 300) // 300ms debounce
-
-    return () => clearTimeout(debounceTimer) // Cleanup timer on unmount or query change
-  }, [query])
-
-  // Render States
+export function RepoSearch({ repositories, loading, error, query }: RepoSearchProps) {
   if (loading) {
     return (
       <div className='space-y-3'>
@@ -171,40 +128,34 @@ function _RepoSearch() {
       </div>
     )
   }
+
   if (error) {
     return <div className='p-4 text-center text-destructive dark:text-red-500'>Error: {error}</div>
   }
+
   if (!query) {
-    // Initial state before any search
     return (
       <div className='p-4 text-center text-muted-foreground'>
         Enter a search term above to find repositories.
       </div>
     )
   }
+
   if (repositories.length === 0) {
-    // State after a search yielded no results
     return (
       <div className='p-4 text-center text-muted-foreground'>
         No repositories found matching "{query}".
       </div>
     )
   }
-  // Only render the list if there are repositories
-  if (repositories.length > 0) {
-    return (
-      <TooltipProvider delayDuration={300}>
-        <div className='space-y-3'>
-          {repositories.map((repo) => (
-            <RepoListItem key={repo.id} repo={repo} />
-          ))}
-          {/* TODO: Add pagination if needed */}
-        </div>
-      </TooltipProvider>
-    )
-  }
 
-  // Fallback for any unexpected state (should ideally not be reached)
-  return null
+  return (
+    <TooltipProvider delayDuration={300}>
+      <div className='space-y-3'>
+        {repositories.map((repo) => (
+          <RepoListItem key={repo.id} repo={repo} />
+        ))}
+      </div>
+    </TooltipProvider>
+  )
 }
-export const RepoSearch = withNuqsAdapter(_RepoSearch)

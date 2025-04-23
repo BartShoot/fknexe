@@ -4,7 +4,6 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
-// A reusable card for displaying GitHub user search results or lists
 type UserItem = GithubResponse['searchUsers']['items'][number]
 
 interface UserCardProps {
