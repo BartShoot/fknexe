@@ -1,11 +1,15 @@
-import React from 'react'
+import React from 'react';
 
 interface PageContainerProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const PageContainer: React.FC<PageContainerProps> = ({ children }) => {
-  return <div className='container mx-auto p-4'>{children}</div>
-}
+  return (
+    <div className="container mx-auto p-4">
+      {children}
+    </div>
+  );
+};
 
-export { PageContainer }
+export { PageContainer };

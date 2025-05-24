@@ -3,9 +3,9 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { UAParser } from 'ua-parser-js'
 import { GithubApi } from '@/clients/github/api'
 import { withNuqsAdapter } from '@/components/NuqsProvider'
-import { PageTitle } from '@/components/layout/PageTitle'
 import { Button } from '@/components/ui/button'
 import { PackageService } from '@/services/PackageService'
+import { PageTitle } from '@/components/layout/PageTitle'
 
 type ApiAction =
   | 'latest-release'
