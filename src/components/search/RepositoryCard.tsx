@@ -18,18 +18,14 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
     repo.name,
   )}`
   return (
-    <Card className='hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-150'>
-      <CardHeader className='flex items-center justify-between'>
-        <CardTitle className='truncate'>
-          <a
-            href={internalHref}
-            className='block font-semibold hover:underline text-gray-900 dark:text-gray-100 truncate'
-          >
+    <a href={internalHref} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-xl">
+      <Card className='hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-150 w-full'>
+        <CardHeader className='flex items-center justify-between'>
+          <CardTitle className='truncate'>
             {repo.full_name}
-          </a>
-        </CardTitle>
-        <div className='flex items-center gap-2 text-sm whitespace-nowrap'>
-          <IconText icon={<Star size={14} />} gap="gap-1" className="text-muted-foreground">
+          </CardTitle>
+          <div className='flex items-center gap-2 text-sm whitespace-nowrap'>
+            <IconText icon={<Star size={14} />} gap="gap-1" className="text-muted-foreground">
             {repo.stargazers_count}
           </IconText>
           <Tooltip>
