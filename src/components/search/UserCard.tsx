@@ -30,21 +30,21 @@ function TypeIcon({ type }: { type: UserItem['type'] }) {
 export function UserCard({ user }: UserCardProps) {
   const href = `/user?u=${encodeURIComponent(user.login)}`
   return (
-    <Card className='hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'>
-      <CardHeader className='flex items-center justify-between p-2'>
-        <div className='flex items-center gap-3 overflow-hidden'>
-          <Avatar className='h-8 w-8 flex-shrink-0'>
-            <AvatarImage src={user.avatar_url} alt={`${user.login} avatar`} />
-            <AvatarFallback>{user.login.slice(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <CardTitle className='truncate'>
-            <a href={href} className='block hover:underline'>
+    <a href={href} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-xl">
+      <Card className='hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors w-full'>
+        <CardHeader className='flex items-center justify-between p-2'>
+          <div className='flex items-center gap-3 overflow-hidden'>
+            <Avatar className='h-8 w-8 flex-shrink-0'>
+              <AvatarImage src={user.avatar_url} alt={`${user.login} avatar`} />
+              <AvatarFallback>{user.login.slice(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <CardTitle className='truncate'>
               {user.login}
-            </a>
-          </CardTitle>
-        </div>
-        <TypeIcon type={user.type} />
-      </CardHeader>
-    </Card>
+            </CardTitle>
+          </div>
+          <TypeIcon type={user.type} />
+        </CardHeader>
+      </Card>
+    </a>
   )
 }

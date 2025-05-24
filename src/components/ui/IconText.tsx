@@ -36,15 +36,49 @@ function IconText({
   children,
   ...props
 }: IconTextProps) {
-  const Comp = asChild ? Slot : 'span';
+  if (asChild) {
+    if (React.Children.count(children) !== 1 || !React.isValidElement(children)) {
+      console.error("IconText with asChild expects a single React element child. Received:", children);
+      return <>{children}</>;
+    }
+    return (
+      <Slot className={cn(iconTextVariants({ iconPosition, className }), gap)} {...props}>
+        {React.cloneElement(children as React.ReactElement, {
+          children: (
+            iconPosition === 'right' ? (
+              <>
+                {(children as React.ReactElement).props.children}
+                {icon}
+              </>
+            ) : (
+              <>
+                {icon}
+                {(children as React.ReactElement).props.children}
+              </>
+            )
+          ),
+        })}
+      </Slot>
+    );
+  }
+
   return (
-    <Comp
+    <span
       className={cn(iconTextVariants({ iconPosition, className }), gap)}
       {...props}
     >
-      {icon}
-      {children}
-    </Comp>
+      {iconPosition === 'right' ? (
+        <>
+          {children}
+          {icon}
+        </>
+      ) : (
+        <>
+          {icon}
+          {children}
+        </>
+      )}
+    </span>
   );
 }
 
