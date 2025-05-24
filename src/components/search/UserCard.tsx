@@ -30,7 +30,7 @@ function TypeIcon({ type }: { type: UserItem['type'] }) {
 export function UserCard({ user }: UserCardProps) {
   const href = `/user?u=${encodeURIComponent(user.login)}`
   return (
-    <a href={href} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-xl">
+    <a href={href} className='block focus:outline-none focus:ring-2 focus:ring-ring rounded-xl'>
       <Card className='hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors w-full'>
         <CardHeader className='flex items-center justify-between p-2'>
           <div className='flex items-center gap-3 overflow-hidden'>
@@ -38,9 +38,7 @@ export function UserCard({ user }: UserCardProps) {
               <AvatarImage src={user.avatar_url} alt={`${user.login} avatar`} />
               <AvatarFallback>{user.login.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
-            <CardTitle className='truncate'>
-              {user.login}
-            </CardTitle>
+            <CardTitle className='truncate'>{user.login}</CardTitle>
           </div>
           <TypeIcon type={user.type} />
         </CardHeader>

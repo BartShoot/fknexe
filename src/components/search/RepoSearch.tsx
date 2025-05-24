@@ -1,8 +1,7 @@
-import React from 'react'
 import type { GithubResponse } from '@/clients/github/api'
-import { Card, CardHeader } from '@/components/ui/card'
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip' // Keep Tooltip related imports
 import { RepositoryCard } from '@/components/search/RepositoryCard'
+import { Card, CardHeader } from '@/components/ui/card'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 type RepoItem = GithubResponse['searchRepositories']['items'][number]
 
