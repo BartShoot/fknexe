@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { DownloadButton } from '@/components/ui/download-button'
 import { type IMatchResult } from '@/lib/types'
@@ -32,29 +33,19 @@ export function PackageCard({ name, url, matchInfo, recommended = false }: Packa
         <CardContent className='px-4 py-2'>
           <div className='flex flex-wrap gap-2 text-sm'>
             {badges.exact_match.map((m, i) => (
-              <span
-                key={`exact-${i}`}
-                className='bg-green-50 text-green-700 px-2 py-1 rounded-full border border-green-200'
-              >
-                <span className='mr-1'>✓</span>
-                {m}
-              </span>
+              <Badge variant='success' key={`exact-${i}`}>
+                ✓ {m}
+              </Badge>
             ))}
             {badges.partial_match.map((m, i) => (
-              <span
-                key={`partial-${i}`}
-                className='bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full border border-yellow-200'
-              >
+              <Badge variant='warning' key={`partial-${i}`}>
                 {m}
-              </span>
+              </Badge>
             ))}
             {badges.conflicts.map((c, i) => (
-              <span
-                key={`conflict-${i}`}
-                className='bg-red-50 text-red-700 px-2 py-1 rounded-full border border-red-200'
-              >
-                <span className='mr-1'>✗</span> {c}
-              </span>
+              <Badge variant='danger' key={`conflict-${i}`}>
+                ✗ {c}
+              </Badge>
             ))}
           </div>
         </CardContent>
