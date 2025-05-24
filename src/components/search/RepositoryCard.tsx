@@ -72,5 +72,6 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
         </CardContent>
       )}
     </Card>
+    </a>
   )
 }
