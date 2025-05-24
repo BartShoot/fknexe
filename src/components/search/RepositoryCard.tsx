@@ -3,6 +3,7 @@ import { type GithubResponse } from '@/clients/github/api'
 import { ButtonLink } from '@/components/ui/button-link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import { IconText } from '@/components/ui/IconText'
 
 // A reusable card for displaying GitHub repository search results or lists
 type RepoItem = GithubResponse['searchRepositories']['items'][number]
@@ -28,9 +29,9 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
           </a>
         </CardTitle>
         <div className='flex items-center gap-2 text-sm whitespace-nowrap'>
-          <span className='flex items-center gap-1 text-muted-foreground'>
-            <Star size={14} /> {repo.stargazers_count}
-          </span>
+          <IconText icon={<Star size={14} />} gap="gap-1" className="text-muted-foreground">
+            {repo.stargazers_count}
+          </IconText>
           <Tooltip>
             <TooltipTrigger asChild>
               <ButtonLink
@@ -57,15 +58,16 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
         <CardContent>
           <Tooltip>
             <TooltipTrigger asChild>
-              <a
-                href={repo.homepage}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline'
+              <IconText
+                asChild
+                icon={<LinkIcon size={14} />}
+                gap="gap-1"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
               >
-                <LinkIcon size={14} />
-                <span className='truncate'>{repo.homepage}</span>
-              </a>
+                <a href={repo.homepage} target='_blank' rel='noopener noreferrer'>
+                  <span className='truncate'>{repo.homepage}</span>
+                </a>
+              </IconText>
             </TooltipTrigger>
             <TooltipContent>
               <p>{repo.homepage}</p>
