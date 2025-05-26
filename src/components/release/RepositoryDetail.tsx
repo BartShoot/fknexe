@@ -41,8 +41,14 @@ function _RepositoryDetail() {
 
         setReadme(readmeData)
         setRelease(releaseData)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch repository data')
+      } catch (err: any) {
+        if (err?.status === 404) {
+          setError(
+            'Repository not found. Please check the owner and repository name, or search for another repository.',
+          )
+        } else {
+          setError('Failed to fetch repository data. Please try again later.')
+        }
       } finally {
         setLoading(false)
       }
