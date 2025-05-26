@@ -126,7 +126,11 @@ function _RepositoryDetail() {
     } else {
       message += `Please try again in ${seconds}s.`
     }
-    return <div className='text-center text-red-500 p-4'>{message}</div>
+    return (
+      <div className='p-4 border rounded-md bg-red-100 border-red-400 text-red-700 dark:bg-red-800 dark:border-red-600 dark:text-red-100 text-center'>
+        {message}
+      </div>
+    )
   }
 
   // Second priority error: Repository Not Found
