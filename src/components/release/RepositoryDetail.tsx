@@ -177,6 +177,7 @@ function _RepositoryDetail() {
             firstPackage={firstPackage}
             parsedUA={parsedUA}
             osName={osName}
+            totalRankedPackagesCount={totalRankedPackagesCount}
             // error={releaseError} // Optional
           />
           <OtherAssets
