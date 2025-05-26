@@ -28,107 +28,167 @@ function _RepositoryDetail() {
   const [releaseError, setReleaseError] = useState<string | null>(null)
   const [repoNotFoundError, setRepoNotFoundError] = useState<string | null>(null)
   const [rateLimitInfo, setRateLimitInfo] = useState<{ resetTime: number } | null>(null)
+  const [countdownDisplay, setCountdownDisplay] = useState<string>('')
+  const [isRefreshDisabled, setIsRefreshDisabled] = useState(true)
 
-  useEffect(() => {
-    const fetchRepositoryData = async () => {
-      if (!owner || !repo) {
-        // Reset states if owner/repo are not present (e.g., cleared from URL)
-        setIsReadmeLoading(true)
-        setIsReleaseLoading(true)
-        setReadme(null)
-        setRelease(null)
-        setReadmeError(null)
-        setReleaseError(null)
-        setRepoNotFoundError(null)
-        setRateLimitInfo(null)
-        return
-      }
+  const initiateFetch = useCallback(async () => {
+    // Ensure rateLimitInfo is reset at the beginning of this function.
+    setRateLimitInfo(null)
+    setIsRefreshDisabled(true) // Disable refresh button by default on new fetch
 
-      // Reset states for new fetch
+    if (!owner || !repo) {
+      // Reset states if owner/repo are not present (e.g., cleared from URL)
       setIsReadmeLoading(true)
       setIsReleaseLoading(true)
+      setReadme(null)
+      setRelease(null)
       setReadmeError(null)
       setReleaseError(null)
       setRepoNotFoundError(null)
-      setRateLimitInfo(null)
-      setReadme(null) // Clear previous data
-      setRelease(null) // Clear previous data
+      // setRateLimitInfo(null); // Already done above
+      return
+    }
 
-      const parsedUserAgent = UAParser(navigator.userAgent)
-      setParsedUA(parsedUserAgent)
-      setOSName(getCurrentOS(parsedUserAgent.os))
+    // Reset states for new fetch
+    setIsReadmeLoading(true)
+    setIsReleaseLoading(true)
+    setReadmeError(null)
+    setReleaseError(null)
+    setRepoNotFoundError(null)
+    // setRateLimitInfo(null); // Already done above
+    setReadme(null) // Clear previous data
+    setRelease(null) // Clear previous data
 
-      // Fetch README
+    const parsedUserAgent = UAParser(navigator.userAgent)
+    setParsedUA(parsedUserAgent)
+    setOSName(getCurrentOS(parsedUserAgent.os))
+
+    // Fetch README
+    try {
+      const readmeData = await GithubApi.getReadme({ owner, repo })
+      setReadme(readmeData)
+    } catch (err: any) {
+      if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
+        setRateLimitInfo({ resetTime: err.rateLimitResetTime })
+        setReadme(null)
+        setRelease(null)
+        setIsReadmeLoading(false)
+        setIsReleaseLoading(false)
+        return // Stop further processing
+      } else if (err?.status === 404) {
+        setRepoNotFoundError(
+          'Repository not found. Please check the owner and repository name, or search for another repository.',
+        )
+        setIsReleaseLoading(false) // No need to attempt release fetch
+        setReadme(null)
+        setRelease(null)
+      } else {
+        setReadmeError('Failed to load README.')
+        setReadme(null)
+      }
+    } finally {
+      setIsReadmeLoading(false)
+    }
+
+    // Fetch Releases only if repo was found AND NOT rate limited during README fetch
+    // AND repoNotFoundError was not set by README fetch
+    if (!repoNotFoundError && !rateLimitInfo) {
       try {
-        const readmeData = await GithubApi.getReadme({ owner, repo })
-        setReadme(readmeData)
+        setIsReleaseLoading(true) // Set loading true for this specific fetch
+        const releaseData = await PackageService.getRankedPackages(owner, repo, parsedUserAgent)
+        setRelease(releaseData)
       } catch (err: any) {
         if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
           setRateLimitInfo({ resetTime: err.rateLimitResetTime })
-          setReadme(null)
           setRelease(null)
-          setIsReadmeLoading(false)
-          setIsReleaseLoading(false)
-          return // Stop further processing
+          // setIsReleaseLoading is handled in finally
         } else if (err?.status === 404) {
-          setRepoNotFoundError(
-            'Repository not found. Please check the owner and repository name, or search for another repository.',
-          )
-          setIsReleaseLoading(false) // No need to attempt release fetch
-          setReadme(null)
+          setReleaseError('No releases found for this repository.')
           setRelease(null)
         } else {
-          setReadmeError('Failed to load README.')
-          setReadme(null)
+          setReleaseError('Failed to load release data.')
+          setRelease(null)
         }
       } finally {
-        setIsReadmeLoading(false)
+        setIsReleaseLoading(false)
+      }
+    }
+  }, [
+    owner,
+    repo,
+    setReadme,
+    setRelease,
+    setParsedUA,
+    setOSName,
+    setIsReadmeLoading,
+    setIsReleaseLoading,
+    setReadmeError,
+    setReleaseError,
+    setRepoNotFoundError,
+    setRateLimitInfo,
+    // setIsRefreshDisabled is not needed here as it's handled by the rateLimitInfo effect
+  ])
+
+  useEffect(() => {
+    if (owner && repo) {
+      initiateFetch()
+    }
+  }, [owner, repo, initiateFetch]) // Primary trigger for fetch
+
+  useEffect(() => {
+    if (!rateLimitInfo || !rateLimitInfo.resetTime || rateLimitInfo.resetTime <= 0) {
+      setCountdownDisplay('')
+      setIsRefreshDisabled(true) // Disable if no rate limit error
+      return
+    }
+
+    // Initialize isRefreshDisabled correctly when rateLimitInfo is first set
+    setIsRefreshDisabled(rateLimitInfo.resetTime * 1000 - Date.now() > 0)
+    let intervalId: NodeJS.Timeout | undefined
+
+    const updateCountdown = () => {
+      const remainingMs = rateLimitInfo.resetTime * 1000 - Date.now()
+
+      if (remainingMs <= 0) {
+        setCountdownDisplay('You can try refreshing now.')
+        setIsRefreshDisabled(false) // Enable button
+        if (intervalId) clearInterval(intervalId)
+        return
       }
 
-      // Fetch Releases only if repo was found AND NOT rate limited during README fetch
-      if (!repoNotFoundError && !rateLimitInfo) {
-        try {
-          setIsReleaseLoading(true) // Set loading true for this specific fetch
-          const releaseData = await PackageService.getRankedPackages(owner, repo, parsedUserAgent)
-          setRelease(releaseData)
-        } catch (err: any) {
-          if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
-            setRateLimitInfo({ resetTime: err.rateLimitResetTime })
-            setRelease(null)
-            // setIsReleaseLoading is handled in finally
-          } else if (err?.status === 404) {
-            setReleaseError('No releases found for this repository.')
-            setRelease(null)
-          } else {
-            setReleaseError('Failed to load release data.')
-            setRelease(null)
-          }
-        } finally {
-          setIsReleaseLoading(false)
-        }
+      setIsRefreshDisabled(true) // Keep button disabled during countdown
+      const remainingTotalSeconds = Math.max(0, Math.floor(remainingMs / 1000))
+      const minutes = Math.floor(remainingTotalSeconds / 60)
+      const seconds = remainingTotalSeconds % 60
+
+      if (minutes > 0) {
+        setCountdownDisplay(`Please try again in ${minutes}m ${seconds}s.`)
+      } else {
+        setCountdownDisplay(`Please try again in ${seconds}s.`)
       }
     }
 
-    fetchRepositoryData()
-  }, [owner, repo, repoNotFoundError]) // Dependencies remain the same
+    updateCountdown() // Initial call
+    intervalId = setInterval(updateCountdown, 1000)
+
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [rateLimitInfo]) // Dependency: rateLimitInfo
 
   // Highest priority error: Rate Limit
   if (rateLimitInfo) {
-    const remainingMs = rateLimitInfo.resetTime * 1000 - Date.now()
-    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000))
-    const minutes = Math.floor(remainingSeconds / 60)
-    const seconds = remainingSeconds % 60
-    let message = 'API rate limit exceeded. '
-    if (remainingSeconds <= 0) {
-      message += 'Please try again now.'
-    } else if (minutes > 0) {
-      message += `Please try again in ${minutes}m ${seconds}s.`
-    } else {
-      message += `Please try again in ${seconds}s.`
-    }
+    const message = `API rate limit exceeded. ${countdownDisplay}`
     return (
-      <div className='p-4 border rounded-md bg-red-100 border-red-400 text-red-700 dark:bg-red-800 dark:border-red-600 dark:text-red-100 text-center'>
+      <div className='p-4 border rounded-md bg-green-100 border-green-400 text-green-700 dark:bg-green-800 dark:border-green-600 dark:text-green-100 text-center'>
         {message}
+        <button
+          onClick={initiateFetch}
+          disabled={isRefreshDisabled}
+          className='ml-4 px-3 py-1 border rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed border-green-500 text-green-700 dark:border-green-400 dark:text-green-100 hover:bg-green-200 dark:hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'
+        >
+          Refresh
+        </button>
       </div>
     )
   }
