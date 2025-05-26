@@ -1,5 +1,7 @@
 import React from 'react'
 import { MatchTags } from '@/components/release/MatchTags'
+import { DownloadButton } from '@/components/ui/download-button'
+import { FileTypeExplanation } from '@/components/ui/file-type-explanation'
 import type { IRankedRelease } from '@/lib/types'
 
 interface RecommendedDownloadProps {
@@ -59,15 +61,10 @@ export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
       <p className='text-sm mb-3 mt-3 text-gray-600 dark:text-gray-300'>
         Downloads: {firstPackage.download_count.toLocaleString()}
       </p>
-      <a
-        href={firstPackage.browser_download_url}
-        target='_blank'
-        rel='noopener noreferrer'
-        className='inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-full text-sm transition duration-150 ease-in-out w-full text-center dark:bg-blue-500 dark:hover:bg-blue-400'
-        download
-      >
+      <DownloadButton href={firstPackage.browser_download_url}>
         Download ({formatBytes(firstPackage.size)})
-      </a>
+      </DownloadButton>
+      <FileTypeExplanation fileType={getExtension(firstPackage.browser_download_url)} />
       <div className='mt-4 text-center'>
         <p className='text-xs mt-2 text-gray-500 dark:text-gray-400'>
           If this is not the right package for you, please let us know!
@@ -87,4 +84,10 @@ export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
       </div>
     </div>
   )
+
+  function getExtension(url: string): string {
+    const urlParts = url?.split('?')?.[0]?.split('/')
+    const fileName = urlParts?.[urlParts.length - 1]
+    return fileName?.split('.').pop() ?? ''
+  }
 }
