@@ -27,6 +27,7 @@ function _RepositoryDetail() {
   const [readmeError, setReadmeError] = useState<string | null>(null)
   const [releaseError, setReleaseError] = useState<string | null>(null)
   const [repoNotFoundError, setRepoNotFoundError] = useState<string | null>(null)
+  const [rateLimitInfo, setRateLimitInfo] = useState<{ resetTime: number } | null>(null)
 
   useEffect(() => {
     const fetchRepositoryData = async () => {
@@ -39,6 +40,7 @@ function _RepositoryDetail() {
         setReadmeError(null)
         setReleaseError(null)
         setRepoNotFoundError(null)
+        setRateLimitInfo(null)
         return
       }
 
@@ -48,6 +50,7 @@ function _RepositoryDetail() {
       setReadmeError(null)
       setReleaseError(null)
       setRepoNotFoundError(null)
+      setRateLimitInfo(null)
       setReadme(null) // Clear previous data
       setRelease(null) // Clear previous data
 
@@ -60,14 +63,20 @@ function _RepositoryDetail() {
         const readmeData = await GithubApi.getReadme({ owner, repo })
         setReadme(readmeData)
       } catch (err: any) {
-        if (err?.status === 404) {
+        if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
+          setRateLimitInfo({ resetTime: err.rateLimitResetTime })
+          setReadme(null)
+          setRelease(null)
+          setIsReadmeLoading(false)
+          setIsReleaseLoading(false)
+          return // Stop further processing
+        } else if (err?.status === 404) {
           setRepoNotFoundError(
             'Repository not found. Please check the owner and repository name, or search for another repository.',
           )
-          // No need to fetch releases if repo is not found
-          setIsReleaseLoading(false) // Ensure release loading is also false
-          setReadme(null) // Ensure readme is null
-          setRelease(null) // Ensure release is null
+          setIsReleaseLoading(false) // No need to attempt release fetch
+          setReadme(null)
+          setRelease(null)
         } else {
           setReadmeError('Failed to load README.')
           setReadme(null)
@@ -76,15 +85,19 @@ function _RepositoryDetail() {
         setIsReadmeLoading(false)
       }
 
-      // Fetch Releases only if repo was found
-      if (!repoNotFoundError) {
+      // Fetch Releases only if repo was found AND NOT rate limited during README fetch
+      if (!repoNotFoundError && !rateLimitInfo) {
         try {
-          setIsReleaseLoading(true) // Explicitly set true before fetch
+          setIsReleaseLoading(true) // Set loading true for this specific fetch
           const releaseData = await PackageService.getRankedPackages(owner, repo, parsedUserAgent)
           setRelease(releaseData)
         } catch (err: any) {
-          if (err?.status === 404) {
-            setReleaseError('No releases found for this repository.') // Or let components handle null
+          if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
+            setRateLimitInfo({ resetTime: err.rateLimitResetTime })
+            setRelease(null)
+            // setIsReleaseLoading is handled in finally
+          } else if (err?.status === 404) {
+            setReleaseError('No releases found for this repository.')
             setRelease(null)
           } else {
             setReleaseError('Failed to load release data.')
@@ -97,9 +110,26 @@ function _RepositoryDetail() {
     }
 
     fetchRepositoryData()
-  }, [owner, repo, repoNotFoundError]) // Added repoNotFoundError to dependencies to handle its change
+  }, [owner, repo, repoNotFoundError]) // Dependencies remain the same
 
-  // Overall error state handling for "Repository Not Found"
+  // Highest priority error: Rate Limit
+  if (rateLimitInfo) {
+    const remainingMs = rateLimitInfo.resetTime * 1000 - Date.now()
+    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000))
+    const minutes = Math.floor(remainingSeconds / 60)
+    const seconds = remainingSeconds % 60
+    let message = 'API rate limit exceeded. '
+    if (remainingSeconds <= 0) {
+      message += 'Please try again now.'
+    } else if (minutes > 0) {
+      message += `Please try again in ${minutes}m ${seconds}s.`
+    } else {
+      message += `Please try again in ${seconds}s.`
+    }
+    return <div className='text-center text-red-500 p-4'>{message}</div>
+  }
+
+  // Second priority error: Repository Not Found
   if (repoNotFoundError) {
     return <div className='text-center text-red-500 p-4'>{repoNotFoundError}</div>
   }
