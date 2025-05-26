@@ -141,6 +141,7 @@ function _RepositoryDetail() {
   // Prepare data for child components
   const latestRelease = release?.latestRelease ?? null
   const rankedPackages = release?.rankedPackages ?? []
+  const totalRankedPackagesCount = rankedPackages.length
   const firstPackage = rankedPackages[0] ?? null
   const otherPackages = rankedPackages.slice(1)
 
@@ -181,6 +182,7 @@ function _RepositoryDetail() {
           <OtherAssets
             loading={isReleaseLoading}
             otherPackages={otherPackages}
+            totalRankedPackagesCount={totalRankedPackagesCount}
             // error={releaseError} // Optional
           />
         </div>

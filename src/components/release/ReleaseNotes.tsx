@@ -32,8 +32,8 @@ export const ReleaseNotes: React.FC<ReleaseNotesProps> = ({
 
   if (!latestRelease) {
     return (
-      <div className='border border-dashed rounded p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[200px]'>
-        <p>No release notes available for this repository.</p>
+      <div className='border border-dashed rounded-md p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[200px]'>
+        <p>No release notes available for this release.</p>
       </div>
     )
   }
@@ -97,7 +97,7 @@ export const ReleaseNotes: React.FC<ReleaseNotesProps> = ({
             {latestRelease.body}
           </Markdown>
         </div>
-      : <div className='border border-dashed rounded-md p-6 min-h-[100px] flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400'>
+      : <div className='border border-dashed rounded-md p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[100px]'>
           <p>No release notes found for this release.</p>
         </div>
       }
