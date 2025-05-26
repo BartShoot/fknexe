@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { UAParser } from 'ua-parser-js'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
@@ -17,50 +17,198 @@ function _RepositoryDetail() {
 
   const [readme, setReadme] = useState<GithubResponse['getReadme'] | null>(null)
   const [release, setRelease] = useState<IRankedRelease | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [parsedUA, setParsedUA] = useState<UAParser.IResult | null>(null)
   const [osName, setOSName] = useState<string | null>(null)
   const { theme } = useTheme()
 
-  useEffect(() => {
-    const fetchRepositoryData = async () => {
-      if (!owner || !repo) return
+  // New granular loading and error states
+  const [isReadmeLoading, setIsReadmeLoading] = useState(true)
+  const [isReleaseLoading, setIsReleaseLoading] = useState(true)
+  const [readmeError, setReadmeError] = useState<string | null>(null)
+  const [releaseError, setReleaseError] = useState<string | null>(null)
+  const [repoNotFoundError, setRepoNotFoundError] = useState<string | null>(null)
+  const [rateLimitInfo, setRateLimitInfo] = useState<{ resetTime: number } | null>(null)
+  const [countdownDisplay, setCountdownDisplay] = useState<string>('')
+  const [isRefreshDisabled, setIsRefreshDisabled] = useState(true)
 
+  const initiateFetch = useCallback(async () => {
+    // Ensure rateLimitInfo is reset at the beginning of this function.
+    setRateLimitInfo(null)
+    setIsRefreshDisabled(true) // Disable refresh button by default on new fetch
+
+    if (!owner || !repo) {
+      // Reset states if owner/repo are not present (e.g., cleared from URL)
+      setIsReadmeLoading(true)
+      setIsReleaseLoading(true)
+      setReadme(null)
+      setRelease(null)
+      setReadmeError(null)
+      setReleaseError(null)
+      setRepoNotFoundError(null)
+      // setRateLimitInfo(null); // Already done above
+      return
+    }
+
+    // Reset states for new fetch
+    setIsReadmeLoading(true)
+    setIsReleaseLoading(true)
+    setReadmeError(null)
+    setReleaseError(null)
+    setRepoNotFoundError(null)
+    // setRateLimitInfo(null); // Already done above
+    setReadme(null) // Clear previous data
+    setRelease(null) // Clear previous data
+
+    const parsedUserAgent = UAParser(navigator.userAgent)
+    setParsedUA(parsedUserAgent)
+    setOSName(getCurrentOS(parsedUserAgent.os))
+
+    // Fetch README
+    try {
+      const readmeData = await GithubApi.getReadme({ owner, repo })
+      setReadme(readmeData)
+    } catch (err: any) {
+      if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
+        setRateLimitInfo({ resetTime: err.rateLimitResetTime })
+        setReadme(null)
+        setRelease(null)
+        setIsReadmeLoading(false)
+        setIsReleaseLoading(false)
+        return // Stop further processing
+      } else if (err?.status === 404) {
+        setRepoNotFoundError(
+          'Repository not found. Please check the owner and repository name, or search for another repository.',
+        )
+        setIsReleaseLoading(false) // No need to attempt release fetch
+        setReadme(null)
+        setRelease(null)
+      } else {
+        setReadmeError('Failed to load README.')
+        setReadme(null)
+      }
+    } finally {
+      setIsReadmeLoading(false)
+    }
+
+    // Fetch Releases only if repo was found AND NOT rate limited during README fetch
+    // AND repoNotFoundError was not set by README fetch
+    if (!repoNotFoundError && !rateLimitInfo) {
       try {
-        setLoading(true)
-
-        const parsedUserAgent = UAParser(navigator.userAgent)
-        setParsedUA(parsedUserAgent)
-        setOSName(getCurrentOS(parsedUserAgent.os))
-
-        const [readmeData, releaseData] = await Promise.all([
-          GithubApi.getReadme({ owner, repo }),
-          PackageService.getRankedPackages(owner, repo, parsedUserAgent),
-        ])
-
-        setReadme(readmeData)
+        setIsReleaseLoading(true) // Set loading true for this specific fetch
+        const releaseData = await PackageService.getRankedPackages(owner, repo, parsedUserAgent)
         setRelease(releaseData)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch repository data')
+      } catch (err: any) {
+        if (err?.isRateLimitError && typeof err?.rateLimitResetTime === 'number') {
+          setRateLimitInfo({ resetTime: err.rateLimitResetTime })
+          setRelease(null)
+          // setIsReleaseLoading is handled in finally
+        } else if (err?.status === 404) {
+          setReleaseError('No releases found for this repository.')
+          setRelease(null)
+        } else {
+          setReleaseError('Failed to load release data.')
+          setRelease(null)
+        }
       } finally {
-        setLoading(false)
+        setIsReleaseLoading(false)
+      }
+    }
+  }, [
+    owner,
+    repo,
+    setReadme,
+    setRelease,
+    setParsedUA,
+    setOSName,
+    setIsReadmeLoading,
+    setIsReleaseLoading,
+    setReadmeError,
+    setReleaseError,
+    setRepoNotFoundError,
+    setRateLimitInfo,
+    // setIsRefreshDisabled is not needed here as it's handled by the rateLimitInfo effect
+  ])
+
+  useEffect(() => {
+    if (owner && repo) {
+      initiateFetch()
+    }
+  }, [owner, repo, initiateFetch]) // Primary trigger for fetch
+
+  useEffect(() => {
+    if (!rateLimitInfo || !rateLimitInfo.resetTime || rateLimitInfo.resetTime <= 0) {
+      setCountdownDisplay('')
+      setIsRefreshDisabled(true) // Disable if no rate limit error
+      return
+    }
+
+    // Initialize isRefreshDisabled correctly when rateLimitInfo is first set
+    setIsRefreshDisabled(rateLimitInfo.resetTime * 1000 - Date.now() > 0)
+    let intervalId: NodeJS.Timeout | undefined
+
+    const updateCountdown = () => {
+      const remainingMs = rateLimitInfo.resetTime * 1000 - Date.now()
+
+      if (remainingMs <= 0) {
+        setCountdownDisplay('You can try refreshing now.')
+        setIsRefreshDisabled(false) // Enable button
+        if (intervalId) clearInterval(intervalId)
+        return
+      }
+
+      setIsRefreshDisabled(true) // Keep button disabled during countdown
+      const remainingTotalSeconds = Math.max(0, Math.floor(remainingMs / 1000))
+      const minutes = Math.floor(remainingTotalSeconds / 60)
+      const seconds = remainingTotalSeconds % 60
+
+      if (minutes > 0) {
+        setCountdownDisplay(`Please try again in ${minutes}m ${seconds}s.`)
+      } else {
+        setCountdownDisplay(`Please try again in ${seconds}s.`)
       }
     }
 
-    fetchRepositoryData()
-  }, [owner, repo])
+    updateCountdown() // Initial call
+    intervalId = setInterval(updateCountdown, 1000)
 
-  // Error state handling
-  if (error) {
-    return <div className='text-center text-red-500 p-4'>{error}</div>
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [rateLimitInfo]) // Dependency: rateLimitInfo
+
+  // Highest priority error: Rate Limit
+  if (rateLimitInfo) {
+    const message = `API rate limit exceeded. ${countdownDisplay}`
+    return (
+      <div className='p-4 border rounded-md bg-green-100 border-green-400 text-green-700 dark:bg-green-800 dark:border-green-600 dark:text-green-100 text-center'>
+        {message}
+        <button
+          onClick={initiateFetch}
+          disabled={isRefreshDisabled}
+          className='ml-4 px-3 py-1 border rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed border-green-500 text-green-700 dark:border-green-400 dark:text-green-100 hover:bg-green-200 dark:hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'
+        >
+          Refresh
+        </button>
+      </div>
+    )
   }
 
-  // Prepare data
+  // Second priority error: Repository Not Found
+  if (repoNotFoundError) {
+    return <div className='text-center text-red-500 p-4'>{repoNotFoundError}</div>
+  }
+
+  // Prepare data for child components
   const latestRelease = release?.latestRelease ?? null
   const rankedPackages = release?.rankedPackages ?? []
+  const totalRankedPackagesCount = rankedPackages.length
   const firstPackage = rankedPackages[0] ?? null
   const otherPackages = rankedPackages.slice(1)
+
+  // Note: Child components like ReadmeSection, ReleaseNotes already handle null data
+  // by showing "No README found" or "No releases found".
+  // We can pass readmeError/releaseError to them if we want more specific error messages
+  // within their boundaries, but it's optional for this refactoring's main goal.
 
   return (
     <div
@@ -69,18 +217,35 @@ function _RepositoryDetail() {
       <div className='flex flex-col md:flex-row gap-6'>
         {/* Left Column: Release Notes & README */}
         <div className='md:w-2/3 flex flex-col gap-6'>
-          <ReleaseNotes loading={loading} latestRelease={latestRelease} owner={owner} repo={repo} />
-          <ReadmeSection loading={loading} readme={readme} />
+          <ReleaseNotes
+            loading={isReleaseLoading}
+            latestRelease={latestRelease}
+            owner={owner}
+            repo={repo}
+            // error={releaseError} // Optional: pass error to display in component
+          />
+          <ReadmeSection
+            loading={isReadmeLoading}
+            readme={readme}
+            // error={readmeError} // Optional: pass error to display in component
+          />
         </div>
         {/* Right Column: Recommended Download & Other Assets */}
         <div className='md:w-1/3 flex flex-col gap-6'>
           <RecommendedDownload
-            loading={loading}
+            loading={isReleaseLoading}
             firstPackage={firstPackage}
             parsedUA={parsedUA}
             osName={osName}
+            totalRankedPackagesCount={totalRankedPackagesCount}
+            // error={releaseError} // Optional
           />
-          <OtherAssets loading={loading} otherPackages={otherPackages} />
+          <OtherAssets
+            loading={isReleaseLoading}
+            otherPackages={otherPackages}
+            totalRankedPackagesCount={totalRankedPackagesCount}
+            // error={releaseError} // Optional
+          />
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ interface RecommendedDownloadProps {
   firstPackage?: IRankedRelease['rankedPackages'][number] | null
   parsedUA?: any
   osName?: string | null
+  totalRankedPackagesCount: number
 }
 
 export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
@@ -14,6 +15,7 @@ export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
   firstPackage,
   parsedUA,
   osName,
+  totalRankedPackagesCount,
 }) => {
   if (loading) {
     return (
@@ -26,8 +28,16 @@ export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
     )
   }
 
-  if (!firstPackage) {
+  if (totalRankedPackagesCount === 0) {
     return null
+  }
+
+  if (!firstPackage) {
+    return (
+      <div className='border border-dashed rounded-md p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[100px]'>
+        <p>No recommended downloads found.</p>
+      </div>
+    )
   }
 
   const formatBytes = (bytes: number, decimals = 2): string => {

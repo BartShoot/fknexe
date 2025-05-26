@@ -53,7 +53,22 @@ export class GithubApi {
       return result.data
     } catch (error) {
       if (error instanceof RequestError) {
+        // Existing message modification
         error.message = `${error.message.replace(/[\W]*https:\/\/.*$/, '')}`
+
+        // New rate limit detection
+        const isRateLimit =
+          error.status === 403 &&
+          (error.response?.data?.message?.toLowerCase().includes('api rate limit exceeded') ||
+            error.response?.headers?.['x-ratelimit-remaining'] === '0')
+
+        if (isRateLimit) {
+          ;(error as any).isRateLimitError = true
+          const resetTimestampHeader = error.response?.headers?.['x-ratelimit-reset']
+          if (resetTimestampHeader) {
+            ;(error as any).rateLimitResetTime = parseInt(resetTimestampHeader as string, 10)
+          }
+        }
       }
       throw error
     }

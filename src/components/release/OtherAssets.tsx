@@ -5,9 +5,14 @@ import type { IRankedRelease } from '@/lib/types'
 interface OtherAssetsProps {
   loading: boolean
   otherPackages: IRankedRelease['rankedPackages']
+  totalRankedPackagesCount: number
 }
 
-export const OtherAssets: React.FC<OtherAssetsProps> = ({ loading, otherPackages }) => {
+export const OtherAssets: React.FC<OtherAssetsProps> = ({
+  loading,
+  otherPackages,
+  totalRankedPackagesCount,
+}) => {
   if (loading) {
     return (
       <div className='space-y-2'>
@@ -21,8 +26,20 @@ export const OtherAssets: React.FC<OtherAssetsProps> = ({ loading, otherPackages
     )
   }
 
+  if (totalRankedPackagesCount === 0) {
+    return (
+      <div className='border border-dashed rounded-md p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[100px]'>
+        <p>This release contains no assets.</p>
+      </div>
+    )
+  }
+
   if (!otherPackages || otherPackages.length === 0) {
-    return null
+    return (
+      <div className='border border-dashed rounded-md p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[100px]'>
+        <p>No other assets available.</p>
+      </div>
+    )
   }
 
   const formatBytes = (bytes: number, decimals = 2): string => {
