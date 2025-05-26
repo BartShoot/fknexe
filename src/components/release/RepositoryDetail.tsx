@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { UAParser } from 'ua-parser-js'
 import { GithubApi, type GithubResponse } from '@/clients/github/api'
