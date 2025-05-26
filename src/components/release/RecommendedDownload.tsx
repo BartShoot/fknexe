@@ -27,7 +27,11 @@ export const RecommendedDownload: React.FC<RecommendedDownloadProps> = ({
   }
 
   if (!firstPackage) {
-    return null
+    return (
+      <div className='border border-dashed rounded p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[100px]'>
+        <p>No recommended downloads found.</p>
+      </div>
+    )
   }
 
   const formatBytes = (bytes: number, decimals = 2): string => {

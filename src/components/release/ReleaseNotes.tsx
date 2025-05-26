@@ -31,7 +31,11 @@ export const ReleaseNotes: React.FC<ReleaseNotesProps> = ({
   }
 
   if (!latestRelease) {
-    return <div className='text-center text-gray-500 p-4'>No release data found.</div>
+    return (
+      <div className='border border-dashed rounded p-6 flex items-center justify-center border-gray-300 bg-gray-50 text-gray-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-gray-400 min-h-[200px]'>
+        <p>No release notes available for this repository.</p>
+      </div>
+    )
   }
 
   return (
