@@ -1,1 +1,0 @@
-/:user/:repo /user/repository/?u=:user&r=:repo 301
